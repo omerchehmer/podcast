@@ -63,3 +63,16 @@ export const VOICES: VoiceOption[] = [
 ];
 
 export const DEFAULT_VOICES = { solo: "marin", hostA: "marin", hostB: "cedar" } as const;
+
+/**
+ * Thinking effort per step ("low" | "medium" | "high"). Lower effort = cheaper and faster.
+ * Haiku does not take an effort setting, so those steps are undefined.
+ */
+export const LLM_EFFORT: Record<PipelineStep, "low" | "medium" | "high" | undefined> = {
+  rank: undefined,
+  plan: "medium",
+  write: "medium",
+  check: undefined,
+  scrub: undefined,
+  learn: undefined,
+};

@@ -1,0 +1,60 @@
+{
+  "displayName": "Omer",
+  "context": "I am the COO of a multi-brand online travel marketplace. We are moving to an AI-first way of working. My goals this year: grow profit, move faster with fewer layers, and use AI to remove manual work. I like practical ideas, clear tradeoffs and honest counter-arguments. English is not my first language, so I like simple words.",
+  "interests": [
+    {
+      "label": "AI agents",
+      "weight": "a_lot"
+    },
+    {
+      "label": "leadership",
+      "weight": "a_lot"
+    },
+    {
+      "label": "travel industry",
+      "weight": "some"
+    },
+    {
+      "label": "organization design",
+      "weight": "some"
+    },
+    {
+      "label": "markets",
+      "weight": "a_little"
+    },
+    {
+      "label": "celebrity gossip",
+      "weight": "avoid"
+    }
+  ],
+  "sources": [
+    {
+      "kind": "rss",
+      "title": "Sample Tech Weekly",
+      "feedUrl": "./feeds/sample-tech.rss.xml",
+      "trust": 1
+    },
+    {
+      "kind": "rss",
+      "title": "Sample Leadership Notes",
+      "feedUrl": "./feeds/sample-leadership.atom.xml",
+      "trust": 0.8
+    }
+  ],
+  "books": [
+    "The Effective Executive",
+    "Multipliers"
+  ],
+  "settings": {
+    "frequency": "weekdays",
+    "deliveryTime": "07:30",
+    "timeZone": "Asia/Jerusalem",
+    "lengthMinutes": 15,
+    "format": "solo",
+    "voiceA": "marin",
+    "voiceB": "cedar",
+    "episodeType": "mix",
+    "tone": "direct",
+    "language": "en"
+  }
+}

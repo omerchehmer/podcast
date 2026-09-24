@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Sample Leadership Notes</title>
+  <entry>
+    <title>Sample: Why single-threaded owners ship faster</title>
+    <link rel="alternate" href="https://example.org/single-threaded-owners"/>
+    <summary type="html">&lt;p&gt;A sample study of 40 product teams found that teams with one clear owner shipped 30 percent faster than teams run by committees. Critics say one owner can become a bottleneck.&lt;/p&gt;</summary>
+  </entry>
+  <entry>
+    <title>Sample: Leaders who ask more questions build stronger teams</title>
+    <link href="https://example.org/questions"/>
+    <content type="html">&lt;p&gt;Managers who ask open questions instead of giving answers had teams that solved problems on their own more often, according to a sample survey of 500 managers.&lt;/p&gt;</content>
+  </entry>
+</feed>

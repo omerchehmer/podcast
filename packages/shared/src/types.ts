@@ -98,8 +98,8 @@ export const ListenerInput = z.object({
   interests: z.array(Interest).default([]),
   sources: z.array(SourceRef).default([]),
   books: z.array(z.string()).default([]),
-  settings: PodcastSettings.default({}),
-  preferences: PreferenceState.default({}),
+  settings: PodcastSettings.prefault({}),
+  preferences: PreferenceState.prefault({}),
   /** Topic tags of recent episodes, for the "do not repeat" rule. */
   recentTopics: z.array(z.object({ tag: z.string(), date: z.string() })).default([]),
   /** Set when the user tapped "Go deeper" on an idea. */
