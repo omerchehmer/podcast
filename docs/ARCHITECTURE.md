@@ -11,7 +11,16 @@ Status: **Approved on 2026-09-24.**
 | First users | 10–20 internal leaders on TestFlight, then public |
 | Company | Separate venture (own accounts, own Apple Developer org) |
 
+| Before the company: demo first | Yes: a mobile web demo for friends (see [DEMO_GUIDE.md](DEMO_GUIDE.md)) |
+
 Account setup steps: see [SETUP_GUIDE.md](SETUP_GUIDE.md).
+
+**Changes after approval**
+- *Demo first.* A mobile web app (`apps/web`) with invite codes and guest accounts. Episodes are made by a
+  GitHub Actions job every hour, plus right away after sign-up. No Apple account, payments or push.
+- *Simpler queue.* The `episodes` table is the queue (`claim_next_episode()` with `FOR UPDATE SKIP LOCKED`).
+  No separate `pgmq` queue is needed. The same worker code runs later on Fly.io or Cloud Run.
+- *Test users.* `profiles.access_override` gives friends full access without a subscription.
 Working name: Briefcast. The name will live in one file: `packages/shared/src/config/app.ts`.
 
 ---

@@ -1,0 +1,35 @@
+# Makes episodes. Runs every hour, and right away when the app calls the kick-worker function.
+# Scheduled runs only happen on the repository's default branch.
+name: worker
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+
+# One run at a time. A new request waits for the running one instead of doing the same work twice.
+concurrency:
+  group: worker
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @briefcast/worker...
+      - name: ffmpeg
+        run: which ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+      - name: Make due and requested episodes
+        run: pnpm --filter @briefcast/worker worker:run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CONTEXT_ENCRYPTION_KEY: ${{ secrets.CONTEXT_ENCRYPTION_KEY }}

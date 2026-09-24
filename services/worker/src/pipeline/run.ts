@@ -35,6 +35,8 @@ export interface EpisodeSource {
   url?: string;
   /** Chapter indexes where this source is used. */
   usedIn: number[];
+  /** Kept so the worker can save the item to the database. */
+  item: CollectedItem;
 }
 
 export interface EpisodeResult {
@@ -133,7 +135,10 @@ export function usedSources(sections: WrittenSection[], items: CollectedItem[]):
   }
   return items
     .filter((i) => used.has(i.id))
-    .map((i) => ({ id: i.id, source: i.sourceTitle, title: i.title, url: i.url, usedIn: [...used.get(i.id)!].sort((a, b) => a - b) }));
+    .map((i) => ({
+      id: i.id, source: i.sourceTitle, title: i.title, url: i.url,
+      usedIn: [...used.get(i.id)!].sort((a, b) => a - b), item: i,
+    }));
 }
 
 const round4 = (n: number) => Math.round(n * 10000) / 10000;

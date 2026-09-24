@@ -4,7 +4,8 @@ A personal daily podcast for one listener: a thinking partner in audio, not a ne
 (Briefcast is a working name. Change it in `packages/shared/src/config/app.ts`.)
 
 - **Plan:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — architecture, data model, screens, build steps
-- **Accounts:** [docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md) — how to create every account and key, step by step
+- **Demo for friends:** [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md) — test with friends first, no company needed
+- **Accounts (full launch):** [docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md) — every account and key, step by step
 
 ## What is in this repo
 
@@ -14,7 +15,10 @@ A personal daily podcast for one listener: a thinking partner in audio, not a ne
 | `services/worker` | Episode pipeline: collect → rank → plan → write → check → voice. Has a CLI. |
 | `supabase/migrations` | Database tables, security rules (RLS), scheduling, queue and cron |
 | `supabase/seed.sql` | Topic categories, voices, starter discovery sources |
-| `apps/mobile` | iOS app (Expo). Comes in build step 4. |
+| `apps/web` | Demo web app (mobile website): onboarding, player, feedback. Preview mode without a backend. |
+| `supabase/functions` | Edge Functions: profile encryption, podcast search, "make it now", delete account |
+| `.github/workflows` | CI tests, and the hourly episode worker for the demo |
+| `apps/mobile` | iOS app (Expo). Comes after the demo. |
 
 ## Requirements
 
@@ -57,6 +61,23 @@ The output goes to `services/worker/out/<time>/`:
 
 Your profile file stays on your computer. `out/` and `.env` are in `.gitignore`.
 
+## Try the demo app
+
+```bash
+pnpm --filter @briefcast/web dev
+```
+
+Without `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` it runs in **preview mode** with sample data.
+With them (see `apps/web/.env.example`) it uses the real backend.
+
+## Worker commands (need Supabase keys)
+
+```bash
+pnpm --filter @briefcast/worker worker:run       # one run: due episodes, learning, queued episodes
+pnpm --filter @briefcast/worker demo:invite --count 5
+pnpm --filter @briefcast/worker demo:stats
+```
+
 ## Where to change things
 
 | To change | Edit |
@@ -79,6 +100,7 @@ psql "$DATABASE_URL" -f supabase/seed.sql
 | Step | Status |
 |---|---|
 | 1. Repo, config, schema, RLS, seed | Done |
-| 2. Pipeline CLI | Done (offline). Waiting for API keys for the first real episode |
-| 3. Quality round | Next, needs keys |
-| 4–12 | Not started |
+| 2. Pipeline CLI | Done (offline). Needs API keys for the first real episode |
+| Demo: web app, worker job, learning loop, Edge Functions | Done (preview mode tested). Needs accounts to go live |
+| 3. Quality round | Starts with the demo |
+| iOS app, payments, App Store | After the demo decision |

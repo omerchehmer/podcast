@@ -81,3 +81,12 @@ describe("TTS splitting", () => {
     expect(chunks.join(" ")).toBe(text);
   });
 });
+
+describe("edge function copies", () => {
+  it("the Edge Function scrubber is the same code as the worker's", async () => {
+    const { readFileSync } = await import("node:fs");
+    const worker = readFileSync(new URL("../src/lib/scrub.ts", import.meta.url), "utf8");
+    const edge = readFileSync(new URL("../../../supabase/functions/_shared/scrub.ts", import.meta.url), "utf8");
+    expect(edge.split("\n").slice(1).join("\n")).toBe(worker);
+  });
+});

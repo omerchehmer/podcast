@@ -149,3 +149,19 @@ If a section has problems, set ok to false and return fixedLines: the full corre
 If a section is fine, set ok to true and return an empty fixedLines list.
 In "detail", describe the problem briefly and never repeat sensitive data.
 `.trim();
+
+export const LEARN_SYSTEM = `
+You keep a short memory of what one podcast listener likes, based on their feedback.
+You write two things:
+
+1. plannerSummary: at most 120 words, plain English, for the person who plans the next episode.
+   Say what the listener liked, what they did not like, what they asked for, and any pattern
+   (for example "prefers practical ideas over news", "wants more about their own industry").
+   Base it only on the feedback given. Keep useful points from the previous summary unless new
+   feedback says otherwise. No personal data beyond what is needed.
+
+2. changeNote: one short line (max 15 words) for the listener, shown on their next episode, that says
+   what will be different because of their feedback. Speak to the listener. Example:
+   "More about leadership, fewer market updates, as you asked."
+   If nothing meaningful changes, return an empty string.
+`.trim();

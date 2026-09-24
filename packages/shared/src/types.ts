@@ -62,6 +62,8 @@ export const Interest = z.object({
 export type Interest = z.infer<typeof Interest>;
 
 export const SourceRef = z.object({
+  /** Database id of the source (sources.id). Not set for sources from a local profile file. */
+  id: z.string().optional(),
   kind: SourceKind,
   title: z.string(),
   url: z.string().optional(),

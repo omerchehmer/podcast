@@ -88,6 +88,13 @@ export class MockLlm implements LlmClient {
       }
       case "check":
         return { sections: d.sections.map((s: Any) => ({ index: s.index, ok: true, problems: [], fixedLines: [] })) };
+      case "learn": {
+        const signals: string[] = d.changesFromRules ?? [];
+        return {
+          plannerSummary: `Listener feedback so far: ${signals.join(", ") || "no clear pattern yet"}.`,
+          changeNote: signals.length ? `${signals.slice(0, 2).join(", ")}, as you asked.` : "",
+        };
+      }
       default:
         throw new Error(`MockLlm has no answer for step ${step}`);
     }

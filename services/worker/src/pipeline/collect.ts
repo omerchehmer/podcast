@@ -12,6 +12,8 @@ import { log } from "../lib/log";
 export interface CollectedItem {
   /** Short id used in prompts and source tags, for example "S3". Set by the ranker. */
   id: string;
+  /** Database id of the source, when known. */
+  sourceId?: string;
   sourceTitle: string;
   sourceKind: SourceRef["kind"];
   trust: number;
@@ -103,6 +105,7 @@ export function toCollected(raw: RawItem, source: SourceRef): CollectedItem {
   const published = raw.publishedAt ? new Date(raw.publishedAt) : undefined;
   return {
     id: "",
+    sourceId: source.id,
     sourceTitle: source.title,
     sourceKind: source.kind,
     trust: source.trust,

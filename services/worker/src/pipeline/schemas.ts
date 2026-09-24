@@ -65,3 +65,9 @@ export const CheckResult = z.object({
   ),
 });
 export type CheckResult = z.infer<typeof CheckResult>;
+
+export const LearnSummary = z.object({
+  plannerSummary: z.string(),
+  changeNote: z.string(),
+});
+export type LearnSummary = z.infer<typeof LearnSummary>;
