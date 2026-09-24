@@ -1,6 +1,17 @@
 # Briefcast — Architecture, Data Model and Screens
 
-Status: **Draft for approval.** No app code has been written yet.
+Status: **Approved on 2026-09-24.**
+
+**Decisions made**
+| Question | Decision |
+|---|---|
+| Build the pipeline CLI first? | Yes |
+| Default voice provider | OpenAI TTS (ElevenLabs optional in config) |
+| Paywall placement | After the first episode is ready |
+| First users | 10–20 internal leaders on TestFlight, then public |
+| Company | Separate venture (own accounts, own Apple Developer org) |
+
+Account setup steps: see [SETUP_GUIDE.md](SETUP_GUIDE.md).
 Working name: Briefcast. The name will live in one file: `packages/shared/src/config/app.ts`.
 
 ---
@@ -533,17 +544,6 @@ steps I give in the README.
 
 ---
 
-## 5. What I need from you
+## 5. Accounts and keys
 
-1. **Approval** of this plan, or changes.
-2. **Answers:**
-   - Is it OK to build the pipeline CLI first (step 2) before the app screens?
-   - OpenAI TTS as the default voice provider? (ElevenLabs does not fit the $0.50 target.)
-   - Paywall after the first episode (my pick) or at the end of onboarding?
-   - First users: internal Travelier leaders on TestFlight, or public launch?
-3. **Accounts and keys** (can come later, before step 2 and step 4):
-   - Anthropic API key, OpenAI API key (for TTS and embeddings)
-   - Supabase project
-   - A domain for the newsletter address (for example `in.briefcast.app`)
-   - Apple Developer account (and request the CarPlay audio entitlement now)
-   - RevenueCat account, Podcast Index API key (free)
+See [SETUP_GUIDE.md](SETUP_GUIDE.md) for step-by-step instructions.

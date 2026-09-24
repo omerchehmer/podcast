@@ -1,0 +1,15 @@
+# Minimal Supabase CLI config. Run `supabase start` for a local stack,
+# or `supabase link --project-ref <ref>` + `supabase db push` for the cloud project.
+project_id = "briefcast"
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+site_url = "briefcast://"
+
+[auth.external.apple]
+enabled = true
+client_id = "app.briefcast.ios"
+secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"
