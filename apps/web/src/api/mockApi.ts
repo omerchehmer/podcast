@@ -40,6 +40,15 @@ const DISCOVERY: SourceOption[] = [
   { id: "d4", kind: "rss", title: "Stratechery (free articles)", url: "https://stratechery.com", categories: ["strategy", "ai"] },
   { id: "d5", kind: "rss", title: "Lenny's Newsletter", url: "https://www.lennysnewsletter.com", categories: ["product", "careers"] },
   { id: "d6", kind: "rss", title: "BBC News — Business", url: "https://www.bbc.co.uk/news/business", categories: ["markets"] },
+  { id: "p1", kind: "podcast", title: "Hard Fork", url: "https://podcasts.apple.com/us/podcast/id1528594034", categories: ["ai"] },
+  { id: "p2", kind: "podcast", title: "HBR IdeaCast", url: "https://podcasts.apple.com/us/podcast/id152022135", categories: ["leadership", "strategy"] },
+  { id: "p3", kind: "podcast", title: "Acquired", url: "https://podcasts.apple.com/us/podcast/id1050462261", categories: ["strategy", "startups"] },
+  { id: "p4", kind: "podcast", title: "The Skift Travel Podcast", url: "https://podcasts.apple.com/us/podcast/id999975096", categories: ["travel"] },
+  { id: "p5", kind: "podcast", title: "Lenny's Podcast", url: "https://podcasts.apple.com/us/podcast/id1627920305", categories: ["product", "careers"] },
+  { id: "b1", kind: "book", title: "Multipliers — Liz Wiseman", categories: ["leadership"] },
+  { id: "b2", kind: "book", title: "Good Strategy Bad Strategy — Richard Rumelt", categories: ["strategy"] },
+  { id: "b3", kind: "book", title: "Co-Intelligence — Ethan Mollick", categories: ["ai"] },
+  { id: "b4", kind: "book", title: "The Airbnb Story — Leigh Gallagher", categories: ["travel"] },
 ];
 
 function sampleEpisode(id: string, when: Date): EpisodeDetail {

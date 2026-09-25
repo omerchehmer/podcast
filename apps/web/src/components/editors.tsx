@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { LIMITS, VOICES, type InterestWeight } from "@briefcast/shared";
 import { api, type Category, type Interest, type MySource, type PodcastHit, type Settings, type SourceOption } from "../api";
 import { DAYS, LANGUAGES, PROFILE_PROMPT } from "../copy";
+import { rankSuggestions, SUGGESTION_GROUPS } from "../suggestions";
 
 // ---------- Interests ----------
 
@@ -72,6 +73,9 @@ export function InterestsEditor({ value, onChange }: { value: Interest[]; onChan
 export function SourcesEditor() {
   const [mine, setMine] = useState<MySource[]>([]);
   const [discovery, setDiscovery] = useState<SourceOption[]>([]);
+  const [interests, setInterests] = useState<Interest[]>([]);
+  const [cats, setCats] = useState<Category[]>([]);
+  const [showAll, setShowAll] = useState(false);
   const [tab, setTab] = useState<"suggested" | "podcast" | "web" | "book">("suggested");
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<PodcastHit[] | null>(null);
@@ -81,8 +85,17 @@ export function SourcesEditor() {
   const [busy, setBusy] = useState(false);
 
   const reload = () => api.getMySources().then(setMine);
-  useEffect(() => { reload(); api.getDiscoverySources().then(setDiscovery); }, []);
+  useEffect(() => {
+    reload();
+    api.getDiscoverySources().then(setDiscovery);
+    api.getInterests().then(setInterests).catch(() => setInterests([]));
+    api.getCategories().then(setCats).catch(() => setCats([]));
+  }, []);
   const has = (id: string) => mine.some((m) => m.id === id);
+  const suggested = rankSuggestions(discovery, interests, cats);
+  const matching = suggested.filter((d) => d.score > 0);
+  // With no matching interests, show everything instead of an empty list.
+  const visible = showAll || matching.length === 0 ? suggested.filter((d) => d.score >= 0) : matching;
 
   const run = async (fn: () => Promise<void>, ok: string) => {
     setBusy(true); setMsg(null);
@@ -101,15 +114,37 @@ export function SourcesEditor() {
       </div>
 
       {tab === "suggested" && (
-        <div className="card">
-          {discovery.map((d) => (
-            <div className="list-item" key={d.id}>
-              <div className="space">{d.title}</div>
-              {has(d.id)
-                ? <button className="btn small secondary" onClick={() => run(() => api.removeSource(d.id), "Removed")}>Added ✓</button>
-                : <button className="btn small" onClick={() => run(() => api.followSource(d.id), "Added")}>Add</button>}
-            </div>
-          ))}
+        <div>
+          <p className="muted small">
+            {matching.length > 0 && !showAll ? "Picked for your interests." : "Trusted sources we recommend."} Tap Add to use one in your episodes.
+          </p>
+          {SUGGESTION_GROUPS.map((g) => {
+            const items = visible.filter((d) => g.kinds.includes(d.kind));
+            if (items.length === 0) return null;
+            return (
+              <div key={g.title}>
+                <h3>{g.title}</h3>
+                <div className="card">
+                  {items.map((d) => (
+                    <div className="list-item" key={d.id}>
+                      <div className="space">
+                        <div>{d.title}</div>
+                        {d.topics.length > 0 && <div className="muted small">{d.topics.join(", ")}</div>}
+                      </div>
+                      {has(d.id)
+                        ? <button className="btn small secondary" onClick={() => run(() => api.removeSource(d.id), "Removed")}>Added ✓</button>
+                        : <button className="btn small" onClick={() => run(() => api.followSource(d.id), "Added")}>Add</button>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+          {matching.length > 0 && (
+            <button className="btn small ghost" style={{ marginTop: 10 }} onClick={() => setShowAll(!showAll)}>
+              {showAll ? "Show only my interests" : "Show all suggestions"}
+            </button>
+          )}
         </div>
       )}
 
