@@ -7,6 +7,11 @@ import { ListenerInput, type PreferenceState } from "@briefcast/shared";
 import { byteaToBuffer, decryptText } from "../lib/crypto";
 import type { EpisodeResult, Step } from "../pipeline/run";
 import type { FeedbackInput, InterestRow, UserSourceRow } from "../learning/learn";
+import { pickDiscoverySources, type InterestPick } from "../lib/discovery";
+
+/** With fewer feeds than this, we add catalog feeds that match the listener's interests. */
+const MIN_OWN_FEEDS = 3;
+const MAX_DISCOVERY_FEEDS = 8;
 
 export interface EpisodeRow {
   id: string;
@@ -69,7 +74,7 @@ export class Repo {
     const [profile, settings, interests, userSources, ctx, prefs, recent] = await Promise.all([
       this.db.from("profiles").select("display_name, time_zone").eq("user_id", uid).single(),
       this.db.from("podcast_settings").select("*").eq("user_id", uid).single(),
-      this.db.from("interests").select("label, user_weight, learned_weight").eq("user_id", uid),
+      this.db.from("interests").select("label, user_weight, learned_weight, category_id").eq("user_id", uid),
       this.db.from("user_sources").select("source_id, trust, muted, sources(kind, title, url, feed_url)").eq("user_id", uid).eq("muted", false),
       this.db.from("listener_context").select("ciphertext").eq("user_id", uid).eq("is_current", true).maybeSingle(),
       this.db.from("preference_state").select("*").eq("user_id", uid).single(),
@@ -91,18 +96,26 @@ export class Repo {
     const rec = must(recent, "recent topics") as unknown as { topic_tags: string[]; episodes: { scheduled_for: string } }[];
 
     const deepDive = ep.deep_dive_of_segment_id ? await this.loadDeepDive(ep.deep_dive_of_segment_id) : undefined;
+    const interestRows = must(interests, "interests") as { label: string; user_weight: string; learned_weight: number; category_id: string | null }[];
+    const ownFeeds = us.filter((u) => u.sources.kind !== "book" && u.sources.feed_url).length;
+    const extra = ownFeeds < MIN_OWN_FEEDS
+      ? await this.discoveryFor(interestRows, MAX_DISCOVERY_FEEDS - ownFeeds, new Set(us.map((u) => u.source_id)))
+      : [];
 
     return ListenerInput.parse({
       userId: uid,
       displayName: p.display_name || "there",
       context: c ? decryptText(byteaToBuffer(c.ciphertext)) : "",
-      interests: (must(interests, "interests") as { label: string; user_weight: string; learned_weight: number }[]).map((i) => ({
+      interests: interestRows.map((i) => ({
         label: i.label, weight: i.user_weight, learnedWeight: i.learned_weight,
       })),
       sources: us.filter((u) => u.sources.kind !== "book").map((u) => ({
         id: u.source_id, kind: u.sources.kind, title: u.sources.title,
         url: u.sources.url ?? undefined, feedUrl: u.sources.feed_url ?? undefined, trust: u.trust,
-      })),
+      })).concat(extra.map((d) => ({
+        // Our picks count a little less than sources the listener chose.
+        id: d.id, kind: d.kind, title: d.title, url: d.url ?? undefined, feedUrl: d.feedUrl ?? undefined, trust: d.trust * 0.8,
+      }))),
       books: us.filter((u) => u.sources.kind === "book").map((u) => u.sources.title),
       settings: {
         frequency: s.frequency,
@@ -125,6 +138,22 @@ export class Repo {
       recentTopics: rec.flatMap((r) => r.topic_tags.map((tag) => ({ tag, date: r.episodes.scheduled_for }))),
       deepDiveRequest: deepDive,
     });
+  }
+
+  /** Catalog feeds that match the listener's interests (for listeners with few feeds of their own). */
+  private async discoveryFor(interests: { user_weight: string; category_id: string | null }[], max: number, skip: Set<string>) {
+    let res = await this.db.from("sources").select("id, kind, title, url, feed_url, discovery_categories, discovery_trust").eq("is_discovery", true);
+    // Until migration 20260925000001 is applied, discovery_trust does not exist yet.
+    if (res.error) res = await this.db.from("sources").select("id, kind, title, url, feed_url, discovery_categories").eq("is_discovery", true) as typeof res;
+    const rows = must(res, "discovery sources") as {
+      id: string; kind: string; title: string; url: string | null; feed_url: string | null; discovery_categories: string[]; discovery_trust?: number;
+    }[];
+    return pickDiscoverySources(
+      rows.map((r) => ({ id: r.id, kind: r.kind, title: r.title, url: r.url, feedUrl: r.feed_url, categories: r.discovery_categories, trust: r.discovery_trust ?? 0.8 })),
+      interests.map((i) => ({ categoryId: i.category_id, weight: i.user_weight as InterestPick["weight"] })),
+      max,
+      skip,
+    );
   }
 
   private async loadDeepDive(segmentId: string) {
