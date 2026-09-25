@@ -136,7 +136,7 @@ export class SupabaseApi implements Api {
   async getMySources(): Promise<MySource[]> {
     const rows = must(await this.db.from("user_sources")
       .select("source_id, added_by, trust, sources(id, kind, title, url, discovery_categories)")
-      .eq("user_id", await this.uid())) as Row[];
+      .eq("user_id", await this.uid()).eq("muted", false)) as Row[];
     return rows.map((r) => ({
       id: r.sources.id, kind: r.sources.kind, title: r.sources.title, url: r.sources.url, categories: r.sources.discovery_categories,
       addedBy: r.added_by, trust: r.trust,
@@ -144,7 +144,7 @@ export class SupabaseApi implements Api {
   }
 
   async followSource(id: string) {
-    must(await this.db.from("user_sources").upsert({ user_id: await this.uid(), source_id: id, added_by: "user" }, { onConflict: "user_id,source_id" }));
+    must(await this.db.from("user_sources").upsert({ user_id: await this.uid(), source_id: id, added_by: "user", trust: 1, muted: false }, { onConflict: "user_id,source_id" }));
   }
 
   async addSource(s: { kind: MySource["kind"]; title: string; url?: string; feedUrl?: string }) {
@@ -152,7 +152,10 @@ export class SupabaseApi implements Api {
   }
 
   async removeSource(id: string) {
-    must(await this.db.from("user_sources").delete().eq("user_id", await this.uid()).eq("source_id", id));
+    const uid = await this.uid();
+    // Sources we added are muted, not deleted, so the worker does not add them again.
+    must(await this.db.from("user_sources").update({ muted: true }).eq("user_id", uid).eq("source_id", id).eq("added_by", "system"));
+    must(await this.db.from("user_sources").delete().eq("user_id", uid).eq("source_id", id).eq("added_by", "user"));
   }
 
   async searchPodcasts(q: string): Promise<PodcastHit[]> {

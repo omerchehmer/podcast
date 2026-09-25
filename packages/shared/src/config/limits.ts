@@ -22,6 +22,10 @@ export const LIMITS = {
   generationLeadMinutes: 60,
   /** Retries for a failed episode job. */
   maxJobAttempts: 3,
+  /** Users with fewer active feeds than this get matching discovery sources added before an episode. */
+  discoveryFillUpTo: 6,
+  /** Starting trust for sources we add (user-added sources start at 1.0). */
+  systemSourceTrust: 0.6,
   /** Keep source text used for fact checks this many days, then delete it. */
   sourceExcerptRetentionDays: 30,
 } as const;
