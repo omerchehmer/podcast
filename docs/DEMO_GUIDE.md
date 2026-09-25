@@ -123,6 +123,9 @@ Without this step, a new episode waits for the next hourly run. With it, episode
 2. Name `briefcast-kick`. Repository access: **Only select repositories** → this repo.
    Permissions → **Actions: Read and write**. Expiry: 90 days.
 3. Add it in the Claude environment settings as `GITHUB_KICK_TOKEN`. I will store it as a Supabase secret.
+4. Also save it in the database vault, so Supabase can start the worker for scheduled episodes
+   (GitHub's own hourly timer is often late or skipped). Supabase → **SQL Editor** → run:
+   `select vault.create_secret('<the token>', 'github_kick_token');`
 
 ### Step 8 — Put the website online (Cloudflare Pages, free)
 
