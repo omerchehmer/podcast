@@ -4,8 +4,11 @@
 import { useEffect, useState } from "react";
 import { LIMITS, VOICES, type InterestWeight } from "@briefcast/shared";
 import { api, type Category, type Interest, type MySource, type PodcastHit, type Settings, type SourceOption } from "../api";
+
+const KIND_LABEL: Record<SourceOption["kind"], string> = {
+  podcast: "Podcast", rss: "Website", website: "Website", newsletter_email: "Newsletter", youtube: "YouTube", book: "Book",
+};
 import { DAYS, LANGUAGES, PROFILE_PROMPT } from "../copy";
-import { rankSuggestions, SUGGESTION_GROUPS } from "../suggestions";
 
 // ---------- Interests ----------
 
@@ -70,12 +73,51 @@ export function InterestsEditor({ value, onChange }: { value: Interest[]; onChan
 
 // ---------- Sources ----------
 
+const WEIGHT_RANK: Record<InterestWeight, number> = { a_lot: 3, some: 2, a_little: 1, avoid: 0 };
+
+interface SourceGroup { key: string; title: string; weight: InterestWeight | null; items: SourceOption[] }
+
+/**
+ * Groups catalog sources by the listener's interests, strongest interest first.
+ * A source goes under its main topic when the listener follows it, else under its second topic.
+ * Sources in an avoided topic are hidden; the rest go under "Other topics".
+ */
+export function groupByInterests(catalog: SourceOption[], interests: Interest[], cats: Category[]): SourceGroup[] {
+  const mine = interests.filter((i) => i.categoryId && i.weight !== "avoid").sort((a, b) => WEIGHT_RANK[b.weight] - WEIGHT_RANK[a.weight]);
+  const avoided = new Set(interests.filter((i) => i.weight === "avoid" && i.categoryId).map((i) => i.categoryId!));
+  const groups: SourceGroup[] = mine.map((i) => ({ key: i.categoryId!, title: cats.find((c) => c.id === i.categoryId)?.name ?? i.label, weight: i.weight, items: [] }));
+  const other: SourceGroup = { key: "other", title: "Other topics", weight: null, items: [] };
+  for (const src of catalog) {
+    if (src.categories.some((c) => avoided.has(c))) continue;
+    const home = src.categories.map((c) => groups.find((g) => g.key === c)).find(Boolean) ?? other;
+    home.items.push(src);
+  }
+  // Feeds before books, then best quality first.
+  for (const g of [...groups, other]) g.items.sort((a, b) => Number(a.kind === "book") - Number(b.kind === "book") || (b.quality ?? 0) - (a.quality ?? 0));
+  return [...groups, other].filter((g) => g.items.length);
+}
+
+function WhyPicked({ source }: { source: SourceOption }) {
+  if (!source.why && !source.evidence?.length) return null;
+  return (
+    <div className="why">
+      {source.why && <p className="small">{source.why}</p>}
+      {!!source.evidence?.length && (
+        <ul className="evidence">
+          {source.evidence.map((e) => (
+            <li key={e.url + e.label}><a href={e.url} target="_blank" rel="noreferrer">{e.label}</a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function SourcesEditor() {
   const [mine, setMine] = useState<MySource[]>([]);
   const [discovery, setDiscovery] = useState<SourceOption[]>([]);
   const [interests, setInterests] = useState<Interest[]>([]);
   const [cats, setCats] = useState<Category[]>([]);
-  const [showAll, setShowAll] = useState(false);
   const [tab, setTab] = useState<"suggested" | "podcast" | "web" | "book">("suggested");
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<PodcastHit[] | null>(null);
@@ -88,14 +130,11 @@ export function SourcesEditor() {
   useEffect(() => {
     reload();
     api.getDiscoverySources().then(setDiscovery);
-    api.getInterests().then(setInterests).catch(() => setInterests([]));
-    api.getCategories().then(setCats).catch(() => setCats([]));
+    api.getInterests().then(setInterests);
+    api.getCategories().then(setCats);
   }, []);
   const has = (id: string) => mine.some((m) => m.id === id);
-  const suggested = rankSuggestions(discovery, interests, cats);
-  const matching = suggested.filter((d) => d.score > 0);
-  // With no matching interests, show everything instead of an empty list.
-  const visible = showAll || matching.length === 0 ? suggested.filter((d) => d.score >= 0) : matching;
+  const groups = groupByInterests(discovery, interests, cats);
 
   const run = async (fn: () => Promise<void>, ok: string) => {
     setBusy(true); setMsg(null);
@@ -103,12 +142,27 @@ export function SourcesEditor() {
     setBusy(false);
   };
 
+  const sourceCard = (d: SourceOption) => (
+    <div className="source-card" key={d.id}>
+      <div className="list-item">
+        <div className="space">
+          <div><b>{d.title}</b></div>
+          <div className="muted small">{KIND_LABEL[d.kind]}{d.url ? <> · <a href={d.url} target="_blank" rel="noreferrer">open</a></> : null}</div>
+        </div>
+        {has(d.id)
+          ? <button className="btn small secondary" disabled={busy} onClick={() => run(() => api.removeSource(d.id), "Removed")}>Added ✓</button>
+          : <button className="btn small" disabled={busy} onClick={() => run(() => api.followSource(d.id), `Added ${d.title}`)}>Add</button>}
+      </div>
+      <WhyPicked source={d} />
+    </div>
+  );
+
   return (
     <div>
       <div className="segmented" style={{ marginBottom: 14 }}>
         {(["suggested", "podcast", "web", "book"] as const).map((t) => (
           <button key={t} className={tab === t ? "on" : ""} onClick={() => { setTab(t); setMsg(null); }}>
-            {{ suggested: "Suggested", podcast: "Podcasts", web: "Websites", book: "Books" }[t]}
+            {{ suggested: "For you", podcast: "Podcasts", web: "Websites", book: "Books" }[t]}
           </button>
         ))}
       </div>
@@ -116,35 +170,34 @@ export function SourcesEditor() {
       {tab === "suggested" && (
         <div>
           <p className="muted small">
-            {matching.length > 0 && !showAll ? "Picked for your interests." : "Trusted sources we recommend."} Tap Add to use one in your episodes.
+            We researched these for your interests. Under each one you can see why we picked it, with links to the proof.
           </p>
-          {SUGGESTION_GROUPS.map((g) => {
-            const items = visible.filter((d) => g.kinds.includes(d.kind));
-            if (items.length === 0) return null;
+          {groups.filter((g) => g.key !== "other").map((g) => {
+            const missing = g.items.filter((d) => d.kind !== "book" && !has(d.id));
             return (
-              <div key={g.title}>
-                <h3>{g.title}</h3>
-                <div className="card">
-                  {items.map((d) => (
-                    <div className="list-item" key={d.id}>
-                      <div className="space">
-                        <div>{d.title}</div>
-                        {d.topics.length > 0 && <div className="muted small">{d.topics.join(", ")}</div>}
-                      </div>
-                      {has(d.id)
-                        ? <button className="btn small secondary" onClick={() => run(() => api.removeSource(d.id), "Removed")}>Added ✓</button>
-                        : <button className="btn small" onClick={() => run(() => api.followSource(d.id), "Added")}>Add</button>}
-                    </div>
-                  ))}
+              <div key={g.key}>
+                <div className="group-head">
+                  <h3>{g.title}{g.weight ? <span className="muted small"> · {WEIGHT_LABEL[g.weight]}</span> : null}</h3>
+                  {missing.length > 1 && (
+                    <button className="btn small ghost" disabled={busy}
+                      onClick={() => run(async () => { for (const d of missing) await api.followSource(d.id); }, `Added ${missing.length} sources for ${g.title}`)}>
+                      Add all
+                    </button>
+                  )}
                 </div>
+                <div className="card">{g.items.map(sourceCard)}</div>
               </div>
             );
           })}
-          {matching.length > 0 && (
-            <button className="btn small ghost" style={{ marginTop: 10 }} onClick={() => setShowAll(!showAll)}>
-              {showAll ? "Show only my interests" : "Show all suggestions"}
-            </button>
+          {groups.length > 0 && groups.every((g) => g.key === "other") && (
+            <p className="note">Choose some interests first. Then we show the best sources for them here.</p>
           )}
+          {groups.filter((g) => g.key === "other").map((g) => (
+            <details key={g.key} className="more">
+              <summary>Other topics ({g.items.length})</summary>
+              <div className="card">{g.items.map(sourceCard)}</div>
+            </details>
+          ))}
         </div>
       )}
 
@@ -169,7 +222,10 @@ export function SourcesEditor() {
         <form onSubmit={(e) => {
           e.preventDefault();
           const feed = url.trim().startsWith("http") ? url.trim() : `https://${url.trim()}`;
-          run(() => api.addSource({ kind: "rss", title: new URL(feed).hostname.replace(/^www\./, ""), url: feed, feedUrl: feed }), "Added. We will check the feed when we make your next episode.");
+          let host: string;
+          try { host = new URL(feed).hostname; } catch { setMsg("This does not look like a web address. Example: stratechery.com/feed"); return; }
+          if (!host.includes(".")) { setMsg("This does not look like a web address. Example: stratechery.com/feed"); return; }
+          run(() => api.addSource({ kind: "rss", title: host.replace(/^www\./, ""), url: feed, feedUrl: feed }), "Added. We will check the feed when we make your next episode.");
           setUrl("");
         }}>
           <label className="field"><span>Website or RSS feed address</span>
@@ -200,7 +256,7 @@ export function SourcesEditor() {
             <div className="list-item" key={m.id}>
               <div className="space">
                 <div>{m.title}</div>
-                <div className="muted small">{{ podcast: "Podcast", rss: "Website", website: "Website", newsletter_email: "Newsletter", youtube: "YouTube", book: "Book" }[m.kind]}{m.addedBy === "system" ? " · suggested" : ""}</div>
+                <div className="muted small">{KIND_LABEL[m.kind]}{m.addedBy === "system" ? " · picked for you" : ""}</div>
               </div>
               <button className="btn small ghost" onClick={() => run(() => api.removeSource(m.id), "Removed")} aria-label={`Remove ${m.title}`}>Remove</button>
             </div>

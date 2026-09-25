@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
+import { readFileSync } from "node:fs";
 import type { PGlite } from "@electric-sql/pglite";
 import { createTestDb, asUser, createUser } from "./helpers/db";
 
@@ -134,7 +135,11 @@ describe("discovery sources", () => {
     const u = await createUser(db);
     const r = await asUser(db, u, () => db.query<{ kind: string; n: number }>(
       `select kind::text, count(*)::int as n from sources where is_discovery and title not like 'Trips%' and title not like 'Plans%' group by kind order by kind`));
-    expect(Object.fromEntries(r.rows.map((x) => [x.kind, x.n]))).toEqual({ book: 22, podcast: 21, rss: 10 });
+    // Same counts as the researched catalog file (supabase/catalog/sources.json).
+    const catalog = JSON.parse(readFileSync(new URL("../../../supabase/catalog/sources.json", import.meta.url), "utf8")) as { kind: string }[];
+    const expected: Record<string, number> = {};
+    for (const c of catalog) expected[c.kind] = (expected[c.kind] ?? 0) + 1;
+    expect(Object.fromEntries(r.rows.map((x) => [x.kind, x.n]))).toEqual(expected);
   });
 
   it("users cannot call it", async () => {
