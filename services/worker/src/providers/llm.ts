@@ -36,8 +36,9 @@ export class AnthropicLlm implements LlmClient {
   private client: Anthropic;
 
   constructor(apiKey?: string) {
-    // With no key given, the SDK reads ANTHROPIC_API_KEY from the environment.
-    this.client = new Anthropic(apiKey ? { apiKey } : {});
+    // BRIEFCAST_ANTHROPIC_API_KEY is for Claude Code cloud workspaces, which reserve ANTHROPIC_API_KEY.
+    const key = apiKey ?? process.env.BRIEFCAST_ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY;
+    this.client = new Anthropic(key ? { apiKey: key } : {});
   }
 
   async json<S extends z.ZodType>(step: PipelineStep, req: LlmRequest<S>, cost: CostTracker): Promise<z.infer<S>> {

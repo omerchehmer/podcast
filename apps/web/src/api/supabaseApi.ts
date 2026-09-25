@@ -196,7 +196,7 @@ export class SupabaseApi implements Api {
 
   async getEpisode(id: string): Promise<EpisodeDetail> {
     const e = must(await this.db.from("episodes")
-      .select("*, episode_segments(*), episode_sources(segment_id, source_items(title, url, sources(title)))")
+      .select("*, episode_segments!episode_segments_episode_id_fkey(*), episode_sources(segment_id, source_items(title, url, sources(title)))")
       .eq("id", id).single()) as Row;
     let audioUrl: string | null = null;
     if (e.audio_path) {

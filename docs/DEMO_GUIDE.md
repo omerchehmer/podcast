@@ -101,7 +101,9 @@ In this Claude workspace: environment menu in the title bar → **Edit** → add
 - `SUPABASE_DB_PASSWORD` → the database password from step 3
 - `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` → from step 3 (to create invite codes and read the stats)
 - `CONTEXT_ENCRYPTION_KEY` → from step 4
-- `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` → so I can make test episodes here too
+- `BRIEFCAST_ANTHROPIC_API_KEY` and `OPENAI_API_KEY` → so I can make test episodes here too.
+  (Use the name `BRIEFCAST_ANTHROPIC_API_KEY` here, not `ANTHROPIC_API_KEY`: Claude Code keeps that name for itself.
+  In GitHub secrets, keep the name `ANTHROPIC_API_KEY`.)
 
 Under **Network access**, allow: `api.supabase.com`, `*.supabase.co`, `api.openai.com`, and the RSS feed
 websites (choosing full network access is easiest).

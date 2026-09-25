@@ -52,7 +52,7 @@ async function main() {
   listener.context = scrubSensitive(listener.context).text;
 
   if (!values.mock) {
-    if (!process.env.ANTHROPIC_API_KEY) fail("ANTHROPIC_API_KEY is not set. Use --mock for a dry run, or see docs/SETUP_GUIDE.md.");
+    if (!process.env.ANTHROPIC_API_KEY && !process.env.BRIEFCAST_ANTHROPIC_API_KEY) fail("ANTHROPIC_API_KEY (or BRIEFCAST_ANTHROPIC_API_KEY) is not set. Use --mock for a dry run, or see docs/SETUP_GUIDE.md.");
     if (!values["no-audio"] && !process.env.OPENAI_API_KEY) fail("OPENAI_API_KEY is not set. Use --no-audio to skip the voice step.");
   }
   const llm = values.mock ? new MockLlm() : new AnthropicLlm();
