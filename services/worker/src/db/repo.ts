@@ -75,7 +75,7 @@ export class Repo {
       this.db.from("preference_state").select("*").eq("user_id", uid).single(),
       this.db
         .from("episode_segments")
-        .select("topic_tags, episodes!inner(user_id, scheduled_for, status)")
+        .select("topic_tags, episodes!episode_segments_episode_id_fkey!inner(user_id, scheduled_for, status)")
         .eq("episodes.user_id", uid)
         .eq("episodes.status", "ready")
         .gte("episodes.scheduled_for", since),
