@@ -77,6 +77,48 @@ describe("adding sources", () => {
   });
 });
 
+describe("discovery sources", () => {
+  const fill = async (uid: string, upTo = 6) =>
+    (await db.query<{ n: number }>(`select add_discovery_sources($1, $2, 0.6) as n`, [uid, upTo])).rows[0]!.n;
+  const mine = async (uid: string) =>
+    (await db.query<{ title: string; added_by: string; trust: number; muted: boolean }>(
+      `select s.title, us.added_by, us.trust, us.muted from user_sources us join sources s on s.id = us.source_id
+       where us.user_id = $1 order by s.title`, [uid])).rows;
+  const interest = (uid: string, cat: string, weight: string) =>
+    db.query(`insert into interests (user_id, category_id, label, user_weight) values ($1, $2, $2, $3::interest_weight)`, [uid, cat, weight]);
+
+  it("adds matching sources with lower trust, skips avoided topics, and does not repeat", async () => {
+    const u = await createUser(db);
+    await interest(u, "travel", "a_lot");
+    await interest(u, "strategy", "some");
+    await interest(u, "ai", "avoid");
+    expect(await fill(u)).toBe(3);
+    const rows = await mine(u);
+    // Skift + PhocusWire (travel), HBR (strategy). Stratechery is strategy + ai, and ai is avoided.
+    expect(rows.map((r) => r.title)).toEqual(["Harvard Business Review", "PhocusWire", "Skift"]);
+    expect(rows.every((r) => r.added_by === "system" && Math.abs(r.trust - 0.6) < 1e-6)).toBe(true);
+    expect(await fill(u)).toBe(0);
+  });
+
+  it("only fills the gap, and never adds back a source the user removed", async () => {
+    const u = await createUser(db);
+    await interest(u, "travel", "a_lot");
+    const own = (await db.query<{ id: string }>(`insert into sources (kind, title, feed_url) values ('rss', 'Own', 'https://own.example.com/feed') returning id`)).rows[0]!.id;
+    await db.query(`insert into user_sources (user_id, source_id) values ($1, $2)`, [u, own]);
+    expect(await fill(u, 1)).toBe(0); // already has enough
+    expect(await fill(u, 2)).toBe(1);
+    await db.query(`update user_sources set muted = true where user_id = $1 and added_by = 'system'`, [u]);
+    expect(await fill(u, 2)).toBe(1); // the other travel source, not the muted one
+    expect((await mine(u)).filter((r) => r.muted)).toHaveLength(1);
+    expect(await fill(u, 10)).toBe(0); // nothing left that matches
+  });
+
+  it("users cannot call it", async () => {
+    const u = await createUser(db);
+    await expect(asUser(db, u, () => fill(u))).rejects.toThrow(/permission/);
+  });
+});
+
 describe("job claiming", () => {
   it("claims each queued episode once, and requeues stuck jobs", async () => {
     const u = await createUser(db);
