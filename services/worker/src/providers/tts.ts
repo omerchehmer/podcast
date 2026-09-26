@@ -11,6 +11,8 @@ export interface TtsRequest {
   voice: string;
   /** How to speak (tone, pace). Supported by gpt-4o-mini-tts. */
   instructions?: string;
+  /** 0.25–4, 1 = normal. */
+  speed?: number;
 }
 
 export interface TtsClient {
@@ -52,11 +54,12 @@ export class OpenAiTts implements TtsClient {
       voice: req.voice as "alloy",
       input: req.text,
       instructions: req.instructions,
+      speed: req.speed,
       response_format: TTS.openai.format,
     });
     const audio = Buffer.from(await res.arrayBuffer());
-    // Cost is estimated from length: ~160 words per minute.
-    const minutes = req.text.split(/\s+/).length / 160;
+    // Cost is estimated from length: ~160 words per minute at normal speed.
+    const minutes = req.text.split(/\s+/).length / (160 * (req.speed ?? 1));
     cost.addTts("openai", TTS.openai.model, req.text.length, minutes * TTS.openai.usdPerMinute);
     return audio;
   }

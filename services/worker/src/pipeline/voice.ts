@@ -9,7 +9,7 @@ import { mkdtemp, writeFile, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { LIMITS, VOICES, type ListenerInput } from "@briefcast/shared";
+import { DEFAULT_PACE, LIMITS, VOICES, type ListenerInput } from "@briefcast/shared";
 import { stripSourceTags, wordCount } from "../lib/text";
 import type { CostTracker } from "../lib/cost";
 import { splitForTts, type TtsClient } from "../providers/tts";
@@ -58,18 +58,23 @@ function voiceFor(speaker: "HOST_A" | "HOST_B", listener: ListenerInput): string
   return VOICES.find((v) => v.id === id)?.providerVoiceId ?? id;
 }
 
+function speedFor(speaker: "HOST_A" | "HOST_B", listener: ListenerInput): number | undefined {
+  const id = speaker === "HOST_B" ? listener.settings.voiceB : listener.settings.voiceA;
+  return VOICES.find((v) => v.id === id)?.speed;
+}
+
 function wpmFor(listener: ListenerInput): number {
   return VOICES.find((v) => v.id === listener.settings.voiceA)?.wordsPerMinute ?? LIMITS.defaultWordsPerMinute;
 }
 
 function speakingInstructions(speaker: "HOST_A" | "HOST_B", listener: ListenerInput): string {
-  const base = "Speak clearly at a steady, moderate pace for listeners who may not be native speakers. Natural podcast delivery.";
+  const id = speaker === "HOST_B" ? listener.settings.voiceB : listener.settings.voiceA;
+  const voice = VOICES.find((v) => v.id === id);
+  const base = `${voice?.pace ?? DEFAULT_PACE} Natural podcast delivery.`;
   const tone = listener.settings.tone === "direct"
     ? `${base} Confident and direct, with energy but no hype.`
     : `${base} Calm, warm and patient.`;
-  const id = speaker === "HOST_B" ? listener.settings.voiceB : listener.settings.voiceA;
-  const style = VOICES.find((v) => v.id === id)?.style;
-  return style ? `${tone} ${style}` : tone;
+  return voice?.style ? `${tone} ${voice.style}` : tone;
 }
 
 async function durationOf(file: string): Promise<number> {
@@ -90,7 +95,12 @@ export async function voice(
     ),
   );
   const audios = await mapLimit(jobs, 4, (j) =>
-    tts.synthesize({ text: j.text, voice: voiceFor(j.speaker, listener), instructions: speakingInstructions(j.speaker, listener) }, cost));
+    tts.synthesize({
+      text: j.text,
+      voice: voiceFor(j.speaker, listener),
+      instructions: speakingInstructions(j.speaker, listener),
+      speed: speedFor(j.speaker, listener),
+    }, cost));
 
   const canBuild = audios.every((a) => a !== null) && (await hasFfmpeg());
   if (!canBuild) return estimated(sections, listener);

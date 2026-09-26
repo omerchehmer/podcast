@@ -64,7 +64,17 @@ export interface VoiceOption {
   wordsPerMinute: number;
   /** Extra speaking style for this voice, added to the TTS instructions (gpt-4o-mini-tts). */
   style?: string;
+  /** Speaking pace for this voice. Without it the voice uses DEFAULT_PACE. */
+  pace?: string;
+  /** TTS speed (1 = normal). Asking for a fast pace in words alone changes little, so fast voices set this too. */
+  speed?: number;
 }
+
+/** Pace for most voices: easy to follow for listeners who are not native speakers. */
+export const DEFAULT_PACE = "Speak clearly at a steady, moderate pace for listeners who may not be native speakers.";
+
+const BRISK_PACE = "Speak clearly at a brisk, quick pace, like a busy morning news host. Keep the energy up and the pauses short, "
+  + "but never rush or swallow words.";
 
 /**
  * Voices shown in onboarding and settings. Each has a 10-second preview file that ships with the
@@ -81,6 +91,8 @@ export const VOICES: VoiceOption[] = [
     style: "Voice style: an inspiring mentor giving a keynote. Warm, confident and full of conviction. "
       + "Lift your energy on the key ideas and use short pauses before them. Sincere and human, never salesy or over the top.",
   },
+  { id: "nova", provider: "openai", providerVoiceId: "nova", name: "Nova", description: "Quick and energetic", wordsPerMinute: 195, pace: BRISK_PACE, speed: 1.15 },
+  { id: "echo", provider: "openai", providerVoiceId: "echo", name: "Echo", description: "Fast and sharp", wordsPerMinute: 195, pace: BRISK_PACE, speed: 1.15 },
 ];
 
 /** The short sample each voice reads in its preview. Same words for all, so voices are easy to compare. */
