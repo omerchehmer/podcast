@@ -13,6 +13,7 @@ import { LIMITS, VOICES, type ListenerInput } from "@briefcast/shared";
 import { stripSourceTags, wordCount } from "../lib/text";
 import type { CostTracker } from "../lib/cost";
 import { splitForTts, type TtsClient } from "../providers/tts";
+import { mapLimit } from "../lib/limit";
 import type { WrittenSection } from "./write";
 
 const run = promisify(execFile);
@@ -69,21 +70,6 @@ function speakingInstructions(speaker: "HOST_A" | "HOST_B", listener: ListenerIn
   const id = speaker === "HOST_B" ? listener.settings.voiceB : listener.settings.voiceA;
   const style = VOICES.find((v) => v.id === id)?.style;
   return style ? `${tone} ${style}` : tone;
-}
-
-/** Run async tasks with a limit on how many run at the same time (TTS rate limits). */
-async function mapLimit<T, R>(items: T[], limit: number, fn: (t: T, i: number) => Promise<R>): Promise<R[]> {
-  const out: R[] = new Array(items.length);
-  let next = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, async () => {
-      while (next < items.length) {
-        const i = next++;
-        out[i] = await fn(items[i]!, i);
-      }
-    }),
-  );
-  return out;
 }
 
 async function durationOf(file: string): Promise<number> {

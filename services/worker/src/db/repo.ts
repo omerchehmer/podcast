@@ -7,6 +7,9 @@ import { LIMITS, ListenerInput, type PreferenceState } from "@briefcast/shared";
 import { byteaToBuffer, decryptText } from "../lib/crypto";
 import type { EpisodeResult, Step } from "../pipeline/run";
 import type { FeedbackInput, InterestRow, UserSourceRow } from "../learning/learn";
+import type { PodcastSource, TranscriptRow, TranscriptSave, TranscriptStore } from "../jobs/transcribe";
+import type { CollectedItem } from "../pipeline/collect";
+import { notesKey, type EpisodeNotes } from "../pipeline/transcript";
 
 export interface EpisodeRow {
   id: string;
@@ -35,7 +38,7 @@ function must<T>(res: { data: T; error: { message: string } | null }, what: stri
   return res.data;
 }
 
-export class Repo {
+export class Repo implements TranscriptStore {
   constructor(private db: SupabaseClient) {}
 
   // ---------- queue ----------
@@ -326,5 +329,60 @@ export class Repo {
       }).eq("user_id", uid),
       "preferences",
     );
+  }
+
+  // ---------- podcast transcripts (shared by all listeners) ----------
+
+  /** Podcasts that at least one listener follows (not muted). */
+  async followedPodcasts(): Promise<PodcastSource[]> {
+    const rows = must(
+      await this.db.from("user_sources").select("source_id, sources!inner(kind, title, feed_url)")
+        .eq("muted", false).eq("sources.kind", "podcast"),
+      "followed podcasts",
+    ) as unknown as { source_id: string; sources: { title: string; feed_url: string | null } }[];
+    const out = new Map<string, PodcastSource>();
+    for (const r of rows) {
+      if (r.sources.feed_url) out.set(r.source_id, { id: r.source_id, title: r.sources.title, feedUrl: r.sources.feed_url });
+    }
+    return [...out.values()];
+  }
+
+  async transcriptRows(sourceIds: string[]): Promise<TranscriptRow[]> {
+    if (sourceIds.length === 0) return [];
+    return must(
+      await this.db.from("episode_transcripts").select("source_id, episode_key, status, attempts, published_at").in("source_id", sourceIds),
+      "transcript rows",
+    ) as TranscriptRow[];
+  }
+
+  async audioMinutesSince(iso: string): Promise<number> {
+    const rows = must(
+      await this.db.from("episode_transcripts").select("audio_minutes").gt("audio_minutes", 0).gte("updated_at", iso),
+      "audio minutes",
+    ) as { audio_minutes: number | string }[];
+    return rows.reduce((a, r) => a + Number(r.audio_minutes), 0);
+  }
+
+  async saveTranscript(row: TranscriptSave): Promise<void> {
+    must(
+      await this.db.from("episode_transcripts").upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "source_id,episode_key" }),
+      "save transcript",
+    );
+  }
+
+  /** Saved episode notes for these feed items, keyed by notesKey(item). */
+  async storedNotes(items: CollectedItem[]): Promise<Map<string, EpisodeNotes>> {
+    const wanted = items.filter((i) => i.basis === "show_notes" && i.sourceId);
+    const out = new Map<string, EpisodeNotes>();
+    if (wanted.length === 0) return out;
+    const rows = must(
+      await this.db.from("episode_transcripts").select("source_id, episode_key, notes, partial")
+        .eq("status", "done").in("episode_key", [...new Set(wanted.map((i) => i.hash))]),
+      "stored notes",
+    ) as { source_id: string; episode_key: string; notes: string | null; partial: boolean }[];
+    for (const r of rows) {
+      if (r.notes) out.set(notesKey({ sourceId: r.source_id, hash: r.episode_key }), { notes: r.notes, partial: r.partial });
+    }
+    return out;
   }
 }

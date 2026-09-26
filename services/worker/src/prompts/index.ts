@@ -171,7 +171,9 @@ notes to talk about the episode, and a checker will use them to check facts. So 
 
 - About 800 words. Cover the whole episode, beginning to end, not only the start.
 - One point per line. Start each line with who said it, as named in the transcript
-  ("Guest:", "Anna:"). If the speaker is not clear, write "Speaker:".
+  ("Guest:", "Anna:"). Many transcripts come from speech-to-text and have no speaker names. Then use
+  the content: the host asks questions and introduces the guest by name. Name a person only when the
+  transcript makes it clear who is speaking; otherwise write "Host:", "Guest:" or "Speaker:".
 - Keep the main arguments, examples, numbers, names, dates and any disagreement, in plain words.
 - Keep exact numbers exactly as said. Never add facts, numbers or opinions that are not in the transcript.
 - Skip ads, sponsor reads, greetings, jokes and small talk.

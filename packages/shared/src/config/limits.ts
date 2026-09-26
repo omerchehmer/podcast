@@ -17,9 +17,21 @@ export const LIMITS = {
   digestAboveWords: 2500,
   /** Longest part of one episode we read. Longer transcripts are marked "partial". About 4 hours of talk. */
   maxTranscriptWords: 40000,
-  /** Speech-to-text: longest part of one episode we transcribe, and total minutes per listener episode. */
+  /**
+   * Podcast transcription job (runs with the hourly worker). The first time a show is followed we
+   * transcribe its last `backfillEpisodes` episodes; after that, every new episode.
+   */
+  backfillEpisodes: 2,
+  /** Safety limit if a feed suddenly publishes many episodes at once. */
+  maxNewEpisodesPerShowPerRun: 5,
+  /** Longest part of one episode we transcribe. Longer episodes are marked "partial". */
   maxAudioMinutesPerItem: 180,
-  maxAudioMinutesPerEpisode: 300,
+  /** Speech-to-text spend limit: about $4.50 a day at $0.003 a minute. */
+  maxAudioMinutesPerDay: 1500,
+  /** A failed episode is tried again this many times in later runs. */
+  maxTranscribeAttempts: 3,
+  /** Time per worker run spent on transcription, after the episodes that are due. */
+  transcribeBudgetMinutes: 15,
   /** Quotes must be short. */
   maxQuoteWords: 25,
   /** Cost target and hard stop per episode, in USD. */
