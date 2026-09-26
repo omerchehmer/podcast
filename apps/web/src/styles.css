@@ -150,3 +150,16 @@ textarea.input { min-height: 180px; resize: vertical; line-height: 1.45; }
 .thumbs button.on { border-color: var(--accent); background: var(--accent-soft); }
 
 .banner { background: #e2a33b; color: #1c2226; font-size: 14px; text-align: center; padding: 6px 12px; }
+
+/* Suggested sources: grouped by interest, each with why we picked it */
+.group-head .btn { white-space: nowrap; }
+.group-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.source-card { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.source-card:last-child { border-bottom: none; padding-bottom: 0; }
+.source-card .list-item { border-bottom: none; padding-bottom: 6px; }
+.why p { margin: 0 0 6px; }
+.evidence { margin: 0; padding-left: 18px; font-size: 14px; color: var(--muted); }
+.evidence li { margin: 2px 0; }
+.evidence a { color: inherit; }
+details.more { margin-top: 18px; }
+details.more summary { cursor: pointer; font-weight: 600; padding: 8px 0; }

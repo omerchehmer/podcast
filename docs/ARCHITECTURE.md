@@ -209,6 +209,9 @@ flowchart TD
 
 **1. Collect.** The worker fetches RSS feeds on a shared schedule (one fetch per feed, not per user).
 For the job, it reads items from the user's sources plus discovery sources that match their interests.
+If the user has fewer than 6 active feeds, the worker adds matching discovery sources (not avoided topics)
+as `system` sources with trust 0.6, so the user's own sources rank first. They show as "suggested" on the
+Sources screen. Removing one mutes it, so it is never added again (`add_discovery_sources` in SQL).
 Lookback: 1 day for daily users, up to 7 days for weekly users.
 
 **2. Rank.** Cheap scoring first, LLM second:

@@ -51,6 +51,8 @@ export interface VoiceOption {
   description: string;
   /** Measured speaking speed. The worker updates this after real episodes. */
   wordsPerMinute: number;
+  /** Extra speaking style for this voice, added to the TTS instructions (gpt-4o-mini-tts). */
+  style?: string;
 }
 
 /** Voices shown in onboarding. Each has a 10-second preview file in storage: voices/<id>.mp3 */
@@ -60,6 +62,11 @@ export const VOICES: VoiceOption[] = [
   { id: "coral", provider: "openai", providerVoiceId: "coral", name: "Coral", description: "Bright and friendly", wordsPerMinute: 165 },
   { id: "sage", provider: "openai", providerVoiceId: "sage", name: "Sage", description: "Steady and thoughtful", wordsPerMinute: 158 },
   { id: "ash", provider: "openai", providerVoiceId: "ash", name: "Ash", description: "Direct and confident", wordsPerMinute: 162 },
+  {
+    id: "onyx", provider: "openai", providerVoiceId: "onyx", name: "Onyx", description: "Deep and inspiring", wordsPerMinute: 175,
+    style: "Voice style: an inspiring mentor giving a keynote. Warm, confident and full of conviction. "
+      + "Lift your energy on the key ideas and use short pauses before them. Sincere and human, never salesy or over the top.",
+  },
 ];
 
 export const DEFAULT_VOICES = { solo: "marin", hostA: "marin", hostB: "cedar" } as const;

@@ -3,7 +3,7 @@
  * The service role skips RLS, so every query here filters by user_id on purpose.
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { ListenerInput, type PreferenceState } from "@briefcast/shared";
+import { LIMITS, ListenerInput, type PreferenceState } from "@briefcast/shared";
 import { byteaToBuffer, decryptText } from "../lib/crypto";
 import type { EpisodeResult, Step } from "../pipeline/run";
 import type { FeedbackInput, InterestRow, UserSourceRow } from "../learning/learn";
@@ -66,6 +66,13 @@ export class Repo {
   async loadListener(ep: EpisodeRow): Promise<ListenerInput> {
     const uid = ep.user_id;
     const since = new Date(Date.now() - 14 * 86_400_000).toISOString();
+    // Fill the gap with curated sources that match the user's interests (they show as "suggested").
+    must(
+      await this.db.rpc("add_discovery_sources", {
+        uid, fill_up_to: LIMITS.discoveryFillUpTo, system_trust: LIMITS.systemSourceTrust,
+      }),
+      "add_discovery_sources",
+    );
     const [profile, settings, interests, userSources, ctx, prefs, recent] = await Promise.all([
       this.db.from("profiles").select("display_name, time_zone").eq("user_id", uid).single(),
       this.db.from("podcast_settings").select("*").eq("user_id", uid).single(),
@@ -75,7 +82,7 @@ export class Repo {
       this.db.from("preference_state").select("*").eq("user_id", uid).single(),
       this.db
         .from("episode_segments")
-        .select("topic_tags, episodes!inner(user_id, scheduled_for, status)")
+        .select("topic_tags, episodes!episode_segments_episode_id_fkey!inner(user_id, scheduled_for, status)")
         .eq("episodes.user_id", uid)
         .eq("episodes.status", "ready")
         .gte("episodes.scheduled_for", since),

@@ -35,12 +35,20 @@ export interface Interest {
 
 export interface Category { id: string; name: string }
 
+export interface Evidence { label: string; url: string }
+
 export interface SourceOption {
   id: string;
   kind: SourceKind;
   title: string;
   url?: string | null;
   categories: string[];
+  /** Why we picked it, in one or two short sentences. Catalog sources only. */
+  why?: string | null;
+  /** Proof behind the pick: awards, ratings, who recommends it. */
+  evidence?: Evidence[];
+  /** Our quality score, 0–1. */
+  quality?: number;
 }
 
 export interface MySource extends SourceOption {

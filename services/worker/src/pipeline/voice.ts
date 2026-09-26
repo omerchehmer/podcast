@@ -61,11 +61,14 @@ function wpmFor(listener: ListenerInput): number {
   return VOICES.find((v) => v.id === listener.settings.voiceA)?.wordsPerMinute ?? LIMITS.defaultWordsPerMinute;
 }
 
-function speakingInstructions(listener: ListenerInput): string {
+function speakingInstructions(speaker: "HOST_A" | "HOST_B", listener: ListenerInput): string {
   const base = "Speak clearly at a steady, moderate pace for listeners who may not be native speakers. Natural podcast delivery.";
-  return listener.settings.tone === "direct"
+  const tone = listener.settings.tone === "direct"
     ? `${base} Confident and direct, with energy but no hype.`
     : `${base} Calm, warm and patient.`;
+  const id = speaker === "HOST_B" ? listener.settings.voiceB : listener.settings.voiceA;
+  const style = VOICES.find((v) => v.id === id)?.style;
+  return style ? `${tone} ${style}` : tone;
 }
 
 /** Run async tasks with a limit on how many run at the same time (TTS rate limits). */
@@ -100,8 +103,8 @@ export async function voice(
       splitForTts(stripSourceTags(l.text)).map((text) => ({ si, li, speaker: l.speaker, text })),
     ),
   );
-  const instructions = speakingInstructions(listener);
-  const audios = await mapLimit(jobs, 4, (j) => tts.synthesize({ text: j.text, voice: voiceFor(j.speaker, listener), instructions }, cost));
+  const audios = await mapLimit(jobs, 4, (j) =>
+    tts.synthesize({ text: j.text, voice: voiceFor(j.speaker, listener), instructions: speakingInstructions(j.speaker, listener) }, cost));
 
   const canBuild = audios.every((a) => a !== null) && (await hasFfmpeg());
   if (!canBuild) return estimated(sections, listener);

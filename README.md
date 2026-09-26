@@ -86,6 +86,7 @@ pnpm --filter @briefcast/worker demo:stats
 | Claude models per step, TTS provider, voices, prices for cost logs | `packages/shared/src/config/ai.ts` |
 | Words per minute, length tolerance, cost cap, lookback days | `packages/shared/src/config/limits.ts` |
 | What the episodes sound like | `services/worker/src/prompts/index.ts` |
+| Suggested sources (with why + proof) | `supabase/catalog/sources.json`, then `node supabase/catalog/build-seed.mjs` |
 
 ## Database (Supabase)
 
