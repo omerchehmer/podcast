@@ -19,6 +19,7 @@ import { runEpisode, NotEnoughContentError } from "../pipeline/run";
 import { computeUpdates, summarize } from "../learning/learn";
 import { CostCapExceeded, CostTracker } from "../lib/cost";
 import { log } from "../lib/log";
+import { httpFetchPage } from "../lib/fetchPage";
 
 const CONCURRENCY = 3;
 /** Stop taking new jobs after this long, so one run never overlaps the next hourly run for long. */
@@ -49,7 +50,7 @@ export async function processEpisode(repo: Repo, ep: EpisodeRow, llm: LlmClient,
   try {
     const listener = await repo.loadListener(ep);
     const result = await runEpisode(listener, {
-      llm, tts, onStep: (s) => repo.setStatus(ep.id, s), storedNotes: (items) => repo.storedNotes(items),
+      llm, tts, fetchPage: httpFetchPage, onStep: (s) => repo.setStatus(ep.id, s), storedNotes: (items) => repo.storedNotes(items),
     });
     await repo.publish(ep, result);
     log.info("episode ready", { episodeId: ep.id, seconds: result.durationSec, usd: result.cost.totalUsd });

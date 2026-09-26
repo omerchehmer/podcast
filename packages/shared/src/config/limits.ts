@@ -13,6 +13,14 @@ export const LIMITS = {
   noRepeatDays: 14,
   /** How many ranked items go into the planner. */
   maxItemsForPlanner: 15,
+  /** Full text: for picked articles with a short feed text (a teaser), open the article page. */
+  fullTextBelowWords: 300,
+  /** Max words of article text kept per item for writing and fact checks. Controls LLM cost. */
+  fullTextMaxWords: 900,
+  /** Article page fetch limits. */
+  pageFetchTimeoutMs: 10_000,
+  pageMaxBytes: 2_000_000,
+  pageFetchConcurrency: 5,
   /** Transcripts longer than this are turned into episode notes first (a whole episode, in about 800 words). */
   digestAboveWords: 2500,
   /** Longest part of one episode we read. Longer transcripts are marked "partial". About 4 hours of talk. */

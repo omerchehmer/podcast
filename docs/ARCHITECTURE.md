@@ -21,6 +21,9 @@ Account setup steps: see [SETUP_GUIDE.md](SETUP_GUIDE.md).
 - *Simpler queue.* The `episodes` table is the queue (`claim_next_episode()` with `FOR UPDATE SKIP LOCKED`).
   No separate `pgmq` queue is needed. The same worker code runs later on Fly.io or Cloud Run.
 - *Test users.* `profiles.access_override` gives friends full access without a subscription.
+- *Full article text.* After ranking, the worker opens the article page of each picked item when the
+  feed gives only a short teaser (under 300 words), and keeps the main text (max 900 words). Paywalls
+  and failed fetches keep the feed text. Podcasts use their own transcript path. Limits in `config/limits.ts`.
 Working name: Briefcast. The name will live in one file: `packages/shared/src/config/app.ts`.
 
 ---

@@ -12,6 +12,8 @@ import type { LlmClient } from "../providers/llm";
 import type { TtsClient } from "../providers/tts";
 import { collect, type CollectedItem } from "./collect";
 import { rank } from "./rank";
+import { readFullText } from "./fulltext";
+import type { PageFetcher } from "../lib/fetchPage";
 import { addTranscripts, applyStoredNotes, type EpisodeNotes } from "./transcript";
 import { plan, type Plan } from "./plan";
 import { writeScript, sectionWords, type WrittenSection } from "./write";
@@ -27,6 +29,8 @@ export interface RunDeps {
   /** Items to use instead of fetching feeds (tests, or items already in the database). */
   items?: CollectedItem[];
   onStep?: (step: Step) => void | Promise<void>;
+  /** Reads the article page of picked items with a short feed text. Leave out to use feed text only (tests). */
+  fetchPage?: PageFetcher;
   /** Podcast episode notes made earlier by the transcription job, keyed by notesKey(item). */
   storedNotes?: (items: CollectedItem[]) => Promise<Map<string, EpisodeNotes>>;
 }
@@ -88,6 +92,7 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
   await step("ranking");
   const ranked = await rank(collected, listener, deps.llm, cost, now);
   if (ranked.items.length === 0) throw new NotEnoughContentError("No usable items from the sources");
+  if (deps.fetchPage) ranked.items = await readFullText(ranked.items, deps.fetchPage);
 
   await step("planning");
   const outline = await plan(ranked, listener, words, deps.llm, cost);
