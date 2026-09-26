@@ -65,7 +65,10 @@ export interface VoiceOption {
   style?: string;
 }
 
-/** Voices shown in onboarding. Each has a 10-second preview file in storage: voices/<id>.mp3 */
+/**
+ * Voices shown in onboarding and settings. Each has a 10-second preview file that ships with the
+ * web app: apps/web/public/voices/<id>.mp3 (make them with `pnpm voice:previews`).
+ */
 export const VOICES: VoiceOption[] = [
   { id: "marin", provider: "openai", providerVoiceId: "marin", name: "Marin", description: "Warm and clear", wordsPerMinute: 160 },
   { id: "cedar", provider: "openai", providerVoiceId: "cedar", name: "Cedar", description: "Calm and deep", wordsPerMinute: 155 },
@@ -78,6 +81,15 @@ export const VOICES: VoiceOption[] = [
       + "Lift your energy on the key ideas and use short pauses before them. Sincere and human, never salesy or over the top.",
   },
 ];
+
+/** The short sample each voice reads in its preview. Same words for all, so voices are easy to compare. */
+export const VOICE_PREVIEW = {
+  seconds: 10,
+  text: (name: string) =>
+    `Hi, I'm ${name}. This is your daily briefing: one big idea, why it matters to you, and one question to think about today.`,
+  /** Web path of the preview file. */
+  path: (id: string) => `voices/${id}.mp3`,
+};
 
 export const DEFAULT_VOICES = { solo: "marin", hostA: "marin", hostB: "cedar" } as const;
 

@@ -35,6 +35,12 @@ pnpm typecheck
 
 The database tests use PGlite (Postgres in WebAssembly), so no Docker or Supabase is needed.
 
+## Voice previews
+
+Onboarding and settings show each voice with a 10-second preview. The files are in
+`apps/web/public/voices/`. To make them again (after changing the sample text or adding a voice in
+`packages/shared/src/config/ai.ts`), run `pnpm voice:previews --force` (needs `OPENAI_API_KEY`, costs about $0.01).
+
 ## Make an episode on your computer
 
 **Dry run, no keys needed** (checks the flow, length and cost estimate, with placeholder text):

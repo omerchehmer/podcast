@@ -2,13 +2,14 @@
  * Editors shared by onboarding and the "You" tab: interests, sources, about you, podcast settings.
  */
 import { useEffect, useState } from "react";
-import { LIMITS, VOICES, type InterestWeight } from "@briefcast/shared";
+import { LIMITS, type InterestWeight } from "@briefcast/shared";
 import { api, type Category, type Interest, type MySource, type PodcastHit, type Settings, type SourceOption } from "../api";
 
 const KIND_LABEL: Record<SourceOption["kind"], string> = {
   podcast: "Podcast", rss: "Website", website: "Website", newsletter_email: "Newsletter", youtube: "YouTube", book: "Book",
 };
 import { DAYS, LANGUAGES, PROFILE_PROMPT } from "../copy";
+import { VoicePicker } from "./VoicePicker";
 
 // ---------- Interests ----------
 
@@ -344,17 +345,10 @@ export function SettingsEditor({ value, onChange }: { value: Settings; onChange:
       {pick([["solo", "One host"], ["conversation", "Two hosts"]] as const, value.format, (v) => set("format", v))}
       <p className="muted small">{value.format === "solo" ? "Like a personal briefing from a smart friend." : "Two hosts who discuss and sometimes disagree."}</p>
 
-      <label className="field"><span>{value.format === "solo" ? "Voice" : "First host"}</span>
-        <select className="input" value={value.voiceA} onChange={(e) => set("voiceA", e.target.value)}>
-          {VOICES.map((v) => <option key={v.id} value={v.id}>{v.name} — {v.description}</option>)}
-        </select>
-      </label>
+      <VoicePicker label={value.format === "solo" ? "Voice" : "First host"} value={value.voiceA}
+        onChange={(id) => onChange({ ...value, voiceA: id, voiceB: id === value.voiceB ? value.voiceA : value.voiceB })} />
       {value.format === "conversation" && (
-        <label className="field"><span>Second host</span>
-          <select className="input" value={value.voiceB} onChange={(e) => set("voiceB", e.target.value)}>
-            {VOICES.filter((v) => v.id !== value.voiceA).map((v) => <option key={v.id} value={v.id}>{v.name} — {v.description}</option>)}
-          </select>
-        </label>
+        <VoicePicker label="Second host" value={value.voiceB} exclude={value.voiceA} onChange={(id) => set("voiceB", id)} />
       )}
 
       <h3>Episode type</h3>

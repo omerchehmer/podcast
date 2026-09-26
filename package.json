@@ -5,7 +5,8 @@
   "scripts": {
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "episode": "pnpm --filter @briefcast/worker episode"
+    "episode": "pnpm --filter @briefcast/worker episode",
+    "voice:previews": "pnpm --filter @briefcast/worker voice:previews"
   },
   "engines": {
     "node": ">=22"
