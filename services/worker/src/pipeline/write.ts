@@ -7,7 +7,7 @@ import { withinTolerance } from "../lib/length";
 import type { CostTracker } from "../lib/cost";
 import type { LlmClient } from "../providers/llm";
 import { ADJUST_SYSTEM, WRITE_SYSTEM } from "../prompts";
-import type { CollectedItem } from "./collect";
+import { itemForLlm, type CollectedItem } from "./collect";
 import type { Plan, PlannedSection } from "./plan";
 import { SectionScript, type ScriptLine } from "./schemas";
 
@@ -33,7 +33,7 @@ function itemsFor(section: PlannedSection, items: CollectedItem[]) {
   const wide = section.kind !== "idea";
   return items
     .filter((i) => wide || ids.has(i.id))
-    .map((i) => ({ id: i.id, source: i.sourceTitle, title: i.title, text: wide ? i.summary : i.excerpt }));
+    .map((i) => itemForLlm(i, wide ? "summary" : "excerpt"));
 }
 
 /** Solo episodes have one voice: force every line to HOST_A. */

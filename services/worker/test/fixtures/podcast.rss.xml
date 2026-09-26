@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0">
+  <channel>
+    <title>Sample Operators Podcast</title>
+    <item>
+      <title>Sample: How AI agents change travel booking</title>
+      <link>https://example.com/pod/ai-agents</link>
+      <pubDate>Wed, 23 Sep 2026 05:00:00 GMT</pubDate>
+      <description>A talk with a travel founder about AI agents. Plus: our sponsor.</description>
+      <enclosure url="https://example.com/pod/ai-agents.mp3" length="1000" type="audio/mpeg" />
+      <podcast:transcript url="{{FIXTURES}}/transcripts/ai-agents.html" type="text/html" />
+      <podcast:transcript url="{{FIXTURES}}/transcripts/ai-agents.vtt" type="text/vtt" />
+    </item>
+    <item>
+      <title>Sample: AI agents and small teams</title>
+      <link>https://example.com/pod/small-teams</link>
+      <pubDate>Thu, 24 Sep 2026 05:00:00 GMT</pubDate>
+      <description>We talk about AI agents and why small teams win.</description>
+      <enclosure url="https://example.com/pod/small-teams.mp3" length="1000" type="audio/mpeg" />
+      <podcast:transcript url="{{FIXTURES}}/transcripts/missing.vtt" type="text/vtt" />
+    </item>
+  </channel>
+</rss>

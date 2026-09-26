@@ -13,6 +13,8 @@ export const LIMITS = {
   noRepeatDays: 14,
   /** How many ranked items go into the planner. */
   maxItemsForPlanner: 15,
+  /** Podcast transcripts are long. Writing and fact checks use at most this many words of one. */
+  maxTranscriptWords: 3000,
   /** Quotes must be short. */
   maxQuoteWords: 25,
   /** Cost target and hard stop per episode, in USD. */

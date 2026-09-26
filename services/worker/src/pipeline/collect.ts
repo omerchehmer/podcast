@@ -8,6 +8,15 @@ import { fileURLToPath } from "node:url";
 import type { SourceRef } from "@briefcast/shared";
 import { contentHash, htmlToText, truncateWords } from "../lib/text";
 import { log } from "../lib/log";
+import { pickTranscript, type TranscriptLink } from "./transcript";
+
+/**
+ * What the item text really is. The writer must be honest about it:
+ * - "text": the article or post itself
+ * - "show_notes": only the description a podcast wrote for an episode (nobody listened to it)
+ * - "transcript": the words spoken in the episode
+ */
+export type ItemBasis = "text" | "show_notes" | "transcript";
 
 export interface CollectedItem {
   /** Short id used in prompts and source tags, for example "S3". Set by the ranker. */
@@ -22,9 +31,15 @@ export interface CollectedItem {
   publishedAt?: string;
   /** Short summary, max ~60 words. */
   summary: string;
-  /** Cleaned text for writing and fact checks, max ~400 words. Never read out in full. */
+  /** Cleaned text for writing and fact checks, max ~400 words (longer for transcripts). Never read out in full. */
   excerpt: string;
   hash: string;
+  /** What the excerpt is. Missing on older items = "text". */
+  basis?: ItemBasis;
+  /** Transcript link from the feed, for podcast episodes that have one. */
+  transcript?: TranscriptLink;
+  /** true when the excerpt holds only the first part of a long transcript. */
+  transcriptPartial?: boolean;
 }
 
 const parser = new XMLParser({
@@ -62,6 +77,21 @@ export interface RawItem {
   url?: string;
   publishedAt?: string;
   html: string;
+  /** true when the item has an audio file (a podcast episode), even in a feed added as plain RSS. */
+  audio?: boolean;
+  transcript?: TranscriptLink;
+}
+
+function transcriptLinks(v: unknown): TranscriptLink[] {
+  return asArray(v as Record<string, string> | Record<string, string>[])
+    .filter((t) => t && typeof t === "object" && t["@url"])
+    .map((t) => ({ url: t["@url"]!, type: t["@type"] ?? "" }));
+}
+
+function hasAudio(v: unknown): boolean {
+  return asArray(v as Record<string, string> | Record<string, string>[]).some(
+    (e) => e && typeof e === "object" && /^(audio|video)\//i.test(e["@type"] ?? ""),
+  );
 }
 
 export function parseFeed(xml: string): RawItem[] {
@@ -77,6 +107,8 @@ export function parseFeed(xml: string): RawItem[] {
       url: txt(it.link) || txt(it.guid) || undefined,
       publishedAt: txt(it.pubDate) || txt(it["dc:date"]) || undefined,
       html: txt(it["content:encoded"]) || txt(it.description) || txt(it["itunes:summary"]),
+      audio: hasAudio(it.enclosure),
+      transcript: pickTranscript(transcriptLinks(it["podcast:transcript"])),
     });
   }
   for (const e of atomEntries) {
@@ -115,6 +147,22 @@ export function toCollected(raw: RawItem, source: SourceRef): CollectedItem {
     summary: truncateWords(text, 60),
     excerpt: truncateWords(text, 400),
     hash: contentHash(raw.url ?? "", raw.title),
+    basis: source.kind === "podcast" || raw.audio ? "show_notes" : "text",
+    transcript: raw.transcript,
+  };
+}
+
+/** How an item is shown to the writer and the checker. "basis" tells them what the text really is. */
+export function itemForLlm(i: CollectedItem, field: "summary" | "excerpt") {
+  // The short summary always comes from the feed, so for a podcast it is show notes, even when we have a transcript.
+  const basis = field === "summary" && i.basis === "transcript" ? "show_notes" : (i.basis ?? "text");
+  return {
+    id: i.id,
+    source: i.sourceTitle,
+    title: i.title,
+    basis,
+    ...(basis === "transcript" && i.transcriptPartial ? { partial: true } : {}),
+    text: i[field],
   };
 }
 
