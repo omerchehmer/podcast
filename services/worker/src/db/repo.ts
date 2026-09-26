@@ -3,11 +3,11 @@
  * The service role skips RLS, so every query here filters by user_id on purpose.
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { LIMITS, ListenerInput, type PreferenceState } from "@briefcast/shared";
+import { LIMITS, ListenerInput, WEIGHT_VALUE, type InterestWeight, type PreferenceState } from "@briefcast/shared";
 import { byteaToBuffer, decryptText } from "../lib/crypto";
 import type { EpisodeResult, Step } from "../pipeline/run";
 import type { FeedbackInput, InterestRow, UserSourceRow } from "../learning/learn";
-import type { PodcastSource, TranscriptRow, TranscriptSave, TranscriptStore } from "../jobs/transcribe";
+import type { Audience, PodcastSource, TranscriptRow, TranscriptSave, TranscriptStore } from "../jobs/transcribe";
 import type { CollectedItem } from "../pipeline/collect";
 import { notesKey, type EpisodeNotes } from "../pipeline/transcript";
 
@@ -333,16 +333,60 @@ export class Repo implements TranscriptStore {
 
   // ---------- podcast transcripts (shared by all listeners) ----------
 
-  /** Podcasts that at least one listener follows (not muted). */
+  /**
+   * Podcasts that at least one listener follows (not muted), with a general picture of who follows
+   * them, used to decide which episodes are worth transcribing. No names or profile text.
+   */
   async followedPodcasts(): Promise<PodcastSource[]> {
     const rows = must(
-      await this.db.from("user_sources").select("source_id, sources!inner(kind, title, feed_url)")
+      await this.db.from("user_sources").select("user_id, source_id, trust, sources!inner(kind, title, feed_url)")
         .eq("muted", false).eq("sources.kind", "podcast"),
       "followed podcasts",
-    ) as unknown as { source_id: string; sources: { title: string; feed_url: string | null } }[];
-    const out = new Map<string, PodcastSource>();
+    ) as unknown as { user_id: string; source_id: string; trust: number; sources: { title: string; feed_url: string | null } }[];
+    const users = [...new Set(rows.map((r) => r.user_id))];
+    if (users.length === 0) return [];
+    const [interests, settings] = await Promise.all([
+      this.db.from("interests").select("user_id, label, user_weight, learned_weight").in("user_id", users),
+      this.db.from("podcast_settings").select("user_id, frequency, custom_days").in("user_id", users),
+    ]);
+    const byUser = new Map<string, { label: string; weight: InterestWeight; learned: number }[]>();
+    for (const i of must(interests, "follower interests") as { user_id: string; label: string; user_weight: InterestWeight; learned_weight: number }[]) {
+      byUser.set(i.user_id, [...(byUser.get(i.user_id) ?? []), { label: i.label, weight: i.user_weight, learned: i.learned_weight }]);
+    }
+    // Same rule as the episode pipeline: people who get 1–2 episodes a week look back further.
+    const lookback = new Map<string, number>();
+    for (const x of must(settings, "follower settings") as { user_id: string; frequency: string; custom_days: number[] }[]) {
+      lookback.set(x.user_id, x.frequency === "custom" && x.custom_days.length <= 2 ? LIMITS.lookbackDaysWeekly : LIMITS.lookbackDaysDaily);
+    }
+
+    const out = new Map<string, PodcastSource & { audience: Audience }>();
+    const weights = new Map<string, Map<string, number>>();
     for (const r of rows) {
-      if (r.sources.feed_url) out.set(r.source_id, { id: r.source_id, title: r.sources.title, feedUrl: r.sources.feed_url });
+      if (!r.sources.feed_url) continue;
+      const p = out.get(r.source_id) ?? {
+        id: r.source_id, title: r.sources.title, feedUrl: r.sources.feed_url,
+        audience: { followers: 0, lookbackDays: 0, interests: [], avoid: [], trust: 0 },
+      };
+      const a = p.audience;
+      a.trust = (a.trust * a.followers + r.trust) / (a.followers + 1);
+      a.followers++;
+      a.lookbackDays = Math.max(a.lookbackDays, lookback.get(r.user_id) ?? LIMITS.lookbackDaysDaily);
+      const w = weights.get(r.source_id) ?? new Map<string, number>();
+      for (const i of byUser.get(r.user_id) ?? []) {
+        const label = i.label.trim().toLowerCase();
+        if (i.weight === "avoid") {
+          if (!a.avoid.includes(label)) a.avoid.push(label);
+        } else {
+          w.set(label, (w.get(label) ?? 0) + WEIGHT_VALUE[i.weight] * i.learned);
+        }
+      }
+      weights.set(r.source_id, w);
+      out.set(r.source_id, p);
+    }
+    for (const p of out.values()) {
+      p.audience.interests = [...(weights.get(p.id) ?? new Map()).entries()]
+        .map(([label, weight]) => ({ label, weight: Math.round(weight * 100) / 100 }))
+        .sort((x, y) => y.weight - x.weight);
     }
     return [...out.values()];
   }

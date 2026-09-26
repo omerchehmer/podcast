@@ -28,6 +28,14 @@ export const LIMITS = {
   maxAudioMinutesPerItem: 180,
   /** Speech-to-text spend limit: about $4.50 a day at $0.003 a minute. */
   maxAudioMinutesPerDay: 1500,
+  /**
+   * Speech-to-text only for episodes worth it. A cheap model scores each new episode 0–10 for the
+   * people who follow the show; below this score it is skipped (and not checked again).
+   * Feed transcripts are free, so they skip this check.
+   */
+  minTranscribeValue: 6,
+  /** Episodes shorter than this are trailers or teasers. */
+  minEpisodeMinutes: 4,
   /** A failed episode is tried again this many times in later runs. */
   maxTranscribeAttempts: 3,
   /** Time per worker run spent on transcription, after the episodes that are due. */

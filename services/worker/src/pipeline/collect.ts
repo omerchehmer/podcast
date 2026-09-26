@@ -81,6 +81,8 @@ export interface RawItem {
   audio?: boolean;
   /** Link to the episode's audio file, for speech-to-text. */
   audioUrl?: string;
+  /** Length from <itunes:duration>, when the feed gives it. */
+  durationMin?: number;
   transcript?: TranscriptLink;
 }
 
@@ -88,6 +90,16 @@ function transcriptLinks(v: unknown): TranscriptLink[] {
   return asArray(v as Record<string, string> | Record<string, string>[])
     .filter((t) => t && typeof t === "object" && t["@url"])
     .map((t) => ({ url: t["@url"]!, type: t["@type"] ?? "" }));
+}
+
+/** "3600", "60:00" or "1:00:00" → minutes. */
+export function durationMinutes(v: string): number | undefined {
+  const s = v.trim();
+  if (!s) return undefined;
+  const parts = s.split(":").map(Number);
+  if (parts.some((n) => !Number.isFinite(n))) return undefined;
+  const sec = parts.reduce((a, n) => a * 60 + n, 0);
+  return sec > 0 ? sec / 60 : undefined;
 }
 
 function audioUrl(v: unknown): string | undefined {
@@ -112,6 +124,7 @@ export function parseFeed(xml: string): RawItem[] {
       html: txt(it["content:encoded"]) || txt(it.description) || txt(it["itunes:summary"]),
       audio: !!audioUrl(it.enclosure),
       audioUrl: audioUrl(it.enclosure),
+      durationMin: durationMinutes(txt(it["itunes:duration"])),
       transcript: pickTranscript(transcriptLinks(it["podcast:transcript"])),
     });
   }

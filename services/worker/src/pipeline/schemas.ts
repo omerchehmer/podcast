@@ -71,6 +71,17 @@ export const TranscriptDigest = z.object({
 });
 export type TranscriptDigest = z.infer<typeof TranscriptDigest>;
 
+export const TranscribeTriage = z.object({
+  episodes: z.array(
+    z.object({
+      id: z.string().describe("Episode id from the input, for example E3"),
+      value: z.number().describe("0-10: how useful the full episode would be for these listeners"),
+      reason: z.string().describe("Max 15 words"),
+    }),
+  ),
+});
+export type TranscribeTriage = z.infer<typeof TranscribeTriage>;
+
 export const LearnSummary = z.object({
   plannerSummary: z.string(),
   changeNote: z.string(),
