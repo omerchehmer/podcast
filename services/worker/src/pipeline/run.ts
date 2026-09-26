@@ -92,7 +92,7 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
   await step("writing");
   // Only now read podcast transcripts: only for the items the plan really uses.
   const usedIds = new Set(outline.sections.flatMap((x) => x.sourceIds));
-  const items = await addTranscripts(ranked.items, usedIds);
+  const items = await addTranscripts(ranked.items, usedIds, { llm: deps.llm, cost });
   const written = await writeScript(outline, items, listener, deps.llm, cost);
 
   await step("checking");

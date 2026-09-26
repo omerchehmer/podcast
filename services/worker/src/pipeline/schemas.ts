@@ -66,6 +66,11 @@ export const CheckResult = z.object({
 });
 export type CheckResult = z.infer<typeof CheckResult>;
 
+export const TranscriptDigest = z.object({
+  notes: z.string().describe("Episode notes, about 800 words. One point per line, with who said it."),
+});
+export type TranscriptDigest = z.infer<typeof TranscriptDigest>;
+
 export const LearnSummary = z.object({
   plannerSummary: z.string(),
   changeNote: z.string(),

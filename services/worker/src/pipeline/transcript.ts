@@ -9,7 +9,11 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { htmlToText, truncateWords, wordCount } from "../lib/text";
 import { log } from "../lib/log";
+import type { CostTracker } from "../lib/cost";
+import type { LlmClient } from "../providers/llm";
+import { DIGEST_SYSTEM } from "../prompts";
 import type { CollectedItem } from "./collect";
+import { TranscriptDigest } from "./schemas";
 
 export interface TranscriptLink {
   url: string;
@@ -88,28 +92,64 @@ async function loadTranscript(url: string): Promise<string> {
 }
 
 /**
+ * Long transcripts are too big (and too costly) to send to the writer and the checker for every
+ * section. One cheap call turns them into ~800 words of notes that cover the whole episode.
+ * If that call fails, we keep the start of the transcript and mark it partial.
+ */
+async function digest(
+  item: CollectedItem, text: string, partial: boolean, llm: LlmClient, cost: CostTracker,
+): Promise<{ excerpt: string; partial: boolean }> {
+  try {
+    const out = await llm.json(
+      "digest",
+      {
+        system: DIGEST_SYSTEM,
+        task: "Write the episode notes for this transcript.",
+        data: { podcast: item.sourceTitle, episode: item.title, partial, transcript: text },
+        schema: TranscriptDigest,
+        maxTokens: 4000,
+      },
+      cost,
+    );
+    if (wordCount(out.notes) < 30) throw new Error("digest is empty");
+    return { excerpt: out.notes.trim(), partial };
+  } catch (e) {
+    log.warn("transcript digest failed", { source: item.sourceTitle, error: String(e) });
+    return { excerpt: truncateWords(text, LIMITS.digestAboveWords), partial: true };
+  }
+}
+
+/**
  * Replace the show notes with the transcript for the given items. Items without a transcript link,
  * or with a transcript that fails to load, are returned unchanged. Runs a few downloads at a time.
+ * Long transcripts are turned into notes first when an LLM is given; without one they are cut.
  */
-export async function addTranscripts<T extends CollectedItem>(items: T[], onlyIds?: Set<string>): Promise<T[]> {
+export async function addTranscripts<T extends CollectedItem>(
+  items: T[],
+  onlyIds?: Set<string>,
+  ai?: { llm: LlmClient; cost: CostTracker },
+): Promise<T[]> {
   const todo = items.filter((i) => i.transcript && i.basis === "show_notes" && (!onlyIds || onlyIds.has(i.id)));
   const loaded = new Map<string, T>();
   for (let n = 0; n < todo.length; n += 4) {
     await Promise.all(
       todo.slice(n, n + 4).map(async (item) => {
+        let text: string;
         try {
-          const text = transcriptToText(await loadTranscript(item.transcript!.url), item.transcript!.type);
+          text = transcriptToText(await loadTranscript(item.transcript!.url), item.transcript!.type);
           if (wordCount(text) < 50) throw new Error("transcript is empty or too short");
-          const total = wordCount(text);
-          loaded.set(item.id, {
-            ...item,
-            basis: "transcript",
-            transcriptPartial: total > LIMITS.maxTranscriptWords,
-            excerpt: truncateWords(text, LIMITS.maxTranscriptWords),
-          });
         } catch (e) {
           log.warn("transcript failed", { source: item.sourceTitle, error: String(e) });
+          return;
         }
+        const total = wordCount(text);
+        const partial = total > LIMITS.maxTranscriptWords;
+        const full = truncateWords(text, LIMITS.maxTranscriptWords);
+        const result =
+          total <= LIMITS.digestAboveWords ? { excerpt: full, partial }
+          : ai ? await digest(item, full, partial, ai.llm, ai.cost)
+          : { excerpt: truncateWords(text, LIMITS.digestAboveWords), partial: true };
+        loaded.set(item.id, { ...item, basis: "transcript", transcriptPartial: result.partial, excerpt: result.excerpt });
       }),
     );
   }

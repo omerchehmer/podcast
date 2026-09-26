@@ -62,7 +62,8 @@ still mostly managed.
 ### 0.4 Some source types are legally or technically weak
 - **Podcast transcripts:** most shows do not publish them. Making our own transcripts from their audio
   is a copyright risk and costs money. **MVP uses title + show notes only.** If a feed includes a
-  `podcast:transcript` tag, we read it (first 3,000 words) for the episodes the plan uses.
+  `podcast:transcript` tag, we read it for the episodes the plan uses. Transcripts over 2,500 words
+  are first turned into ~800 words of notes covering the whole episode (one Haiku call, a few cents).
   Every item carries a `basis` (`text`, `show_notes` or `transcript`). With show notes only, the
   script must say "the show notes say…" and never claim what a guest said; the checker flags
   `wrong_basis` lines.

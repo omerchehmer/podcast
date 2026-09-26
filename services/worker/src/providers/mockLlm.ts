@@ -88,6 +88,10 @@ export class MockLlm implements LlmClient {
       }
       case "check":
         return { sections: d.sections.map((s: Any) => ({ index: s.index, ok: true, problems: [], fixedLines: [] })) };
+      case "digest": {
+        const words = String(d.transcript).split(/\s+/);
+        return { notes: words.slice(0, 800).join(" ") };
+      }
       case "learn": {
         const signals: string[] = d.changesFromRules ?? [];
         return {

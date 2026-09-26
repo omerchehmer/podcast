@@ -4,7 +4,7 @@
  * check the providers' price pages from time to time and update them.
  */
 
-export type PipelineStep = "rank" | "plan" | "write" | "check" | "scrub" | "learn";
+export type PipelineStep = "rank" | "plan" | "write" | "check" | "scrub" | "learn" | "digest";
 
 /** Which Claude model runs each step. Cheap model for sorting/checking, stronger model for writing. */
 export const LLM_MODELS: Record<PipelineStep, string> = {
@@ -14,6 +14,7 @@ export const LLM_MODELS: Record<PipelineStep, string> = {
   check: "claude-haiku-4-5",
   scrub: "claude-haiku-4-5",
   learn: "claude-haiku-4-5",
+  digest: "claude-haiku-4-5",
 };
 
 /** USD per 1 million tokens. Cache reads cost ~10% of input, cache writes ~125%. */
@@ -24,6 +25,15 @@ export const LLM_PRICES: Record<string, { input: number; output: number }> = {
 };
 export const CACHE_READ_FACTOR = 0.1;
 export const CACHE_WRITE_FACTOR = 1.25;
+
+/** Speech-to-text for podcast episodes that have no transcript in their feed. */
+export const STT = {
+  model: "gpt-4o-mini-transcribe",
+  /** Approximate USD per minute of audio, for cost logging. */
+  usdPerMinute: 0.003,
+  /** The model takes at most 25 minutes (and 25 MB) per request, so we send 10-minute parts. */
+  chunkMinutes: 10,
+};
 
 export type TtsProvider = "openai" | "elevenlabs" | "mock";
 
@@ -82,4 +92,5 @@ export const LLM_EFFORT: Record<PipelineStep, "low" | "medium" | "high" | undefi
   check: undefined,
   scrub: undefined,
   learn: undefined,
+  digest: undefined,
 };
