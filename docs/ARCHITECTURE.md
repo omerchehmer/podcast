@@ -62,7 +62,11 @@ still mostly managed.
 ### 0.4 Some source types are legally or technically weak
 - **Podcast transcripts:** most shows do not publish them. Making our own transcripts from their audio
   is a copyright risk and costs money. **MVP uses title + show notes only.** If a feed includes a
-  `podcast:transcript` tag, we use it.
+  `podcast:transcript` tag, we read it for the episodes the plan uses. Transcripts over 2,500 words
+  are first turned into ~800 words of notes covering the whole episode (one Haiku call, a few cents).
+  Every item carries a `basis` (`text`, `show_notes` or `transcript`). With show notes only, the
+  script must say "the show notes say…" and never claim what a guest said; the checker flags
+  `wrong_basis` lines.
 - **YouTube transcripts:** the official API does not give transcripts for other people's videos.
   Scraping breaks YouTube's terms. **Moved to v2** (already outside your MVP list — good).
 - **Newsletters forwarded by the user:** fine for personal use. We must strip tracking links and
@@ -206,6 +210,9 @@ flowchart TD
 
 **1. Collect.** The worker fetches RSS feeds on a shared schedule (one fetch per feed, not per user).
 For the job, it reads items from the user's sources plus discovery sources that match their interests.
+If the user has fewer than 6 active feeds, the worker adds matching discovery sources (not avoided topics)
+as `system` sources with trust 0.6, so the user's own sources rank first. They show as "suggested" on the
+Sources screen. Removing one mutes it, so it is never added again (`add_discovery_sources` in SQL).
 Lookback: 1 day for daily users, up to 7 days for weekly users.
 
 **2. Rank.** Cheap scoring first, LLM second:

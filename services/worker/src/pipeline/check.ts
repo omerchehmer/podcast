@@ -7,7 +7,7 @@ import { scrubSensitive } from "../lib/scrub";
 import type { CostTracker } from "../lib/cost";
 import type { LlmClient } from "../providers/llm";
 import { CHECK_SYSTEM } from "../prompts";
-import type { CollectedItem } from "./collect";
+import { itemForLlm, type CollectedItem } from "./collect";
 import { CheckResult } from "./schemas";
 import type { WrittenSection } from "./write";
 
@@ -58,7 +58,7 @@ export async function check(
           lines: s.lines,
           items: items
             .filter((i) => s.section.kind !== "idea" || s.section.sourceIds.includes(i.id))
-            .map((i) => ({ id: i.id, source: i.sourceTitle, text: i.excerpt })),
+            .map((i) => itemForLlm(i, "excerpt")),
         })),
       },
       schema: CheckResult,

@@ -56,7 +56,7 @@ export const CheckResult = z.object({
       ok: z.boolean(),
       problems: z.array(
         z.object({
-          type: z.enum(["unsupported_claim", "long_quote", "sensitive_data", "unknown_source", "not_simple", "other"]),
+          type: z.enum(["unsupported_claim", "long_quote", "sensitive_data", "unknown_source", "not_simple", "wrong_basis", "other"]),
           detail: z.string().describe("Short description. Do not repeat sensitive data here."),
         }),
       ),
@@ -65,6 +65,11 @@ export const CheckResult = z.object({
   ),
 });
 export type CheckResult = z.infer<typeof CheckResult>;
+
+export const TranscriptDigest = z.object({
+  notes: z.string().describe("Episode notes, about 800 words. One point per line, with who said it."),
+});
+export type TranscriptDigest = z.infer<typeof TranscriptDigest>;
 
 export const LearnSummary = z.object({
   plannerSummary: z.string(),

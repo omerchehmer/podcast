@@ -13,6 +13,13 @@ export const LIMITS = {
   noRepeatDays: 14,
   /** How many ranked items go into the planner. */
   maxItemsForPlanner: 15,
+  /** Transcripts longer than this are turned into episode notes first (a whole episode, in about 800 words). */
+  digestAboveWords: 2500,
+  /** Longest part of one episode we read. Longer transcripts are marked "partial". About 4 hours of talk. */
+  maxTranscriptWords: 40000,
+  /** Speech-to-text: longest part of one episode we transcribe, and total minutes per listener episode. */
+  maxAudioMinutesPerItem: 180,
+  maxAudioMinutesPerEpisode: 300,
   /** Quotes must be short. */
   maxQuoteWords: 25,
   /** Cost target and hard stop per episode, in USD. */
@@ -22,6 +29,10 @@ export const LIMITS = {
   generationLeadMinutes: 60,
   /** Retries for a failed episode job. */
   maxJobAttempts: 3,
+  /** Users with fewer active feeds than this get matching discovery sources added before an episode. */
+  discoveryFillUpTo: 6,
+  /** Starting trust for sources we add (user-added sources start at 1.0). */
+  systemSourceTrust: 0.6,
   /** Keep source text used for fact checks this many days, then delete it. */
   sourceExcerptRetentionDays: 30,
 } as const;

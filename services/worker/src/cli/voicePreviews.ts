@@ -51,7 +51,11 @@ for (const v of voices) {
   }
   mkdirSync(dirname(file), { recursive: true });
   const audio = await tts.synthesize(
-    { text: VOICE_PREVIEW.text(v.name), voice: v.providerVoiceId, instructions: "Warm, natural podcast host. Relaxed pace." },
+    {
+      text: VOICE_PREVIEW.text(v.name),
+      voice: v.providerVoiceId,
+      instructions: ["Warm, natural podcast host. Relaxed pace.", v.style].filter(Boolean).join(" "),
+    },
     cost,
   );
   if (hasFfmpeg) {

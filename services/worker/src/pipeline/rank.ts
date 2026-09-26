@@ -63,7 +63,8 @@ export function scoreItems(items: CollectedItem[], listener: ListenerInput, now:
     const ageDays = item.publishedAt ? (now.getTime() - new Date(item.publishedAt).getTime()) / 86_400_000 : 3;
     const freshness = 1 / (1 + Math.max(0, ageDays) / 3);
     const repeatPenalty = !deepDiveKw && [...kw].some((w) => recent.has(w)) ? 0.5 : 1;
-    const substance = item.excerpt.split(/\s+/).length < 25 ? 0.7 : 1; // headline-only items are weaker
+    // headline-only items are weaker; a podcast with a transcript has substance even if its show notes are short
+    const substance = !item.transcript && item.excerpt.split(/\s+/).length < 25 ? 0.7 : 1;
 
     out.push({ item, score: match * (0.5 + item.trust) * freshness * repeatPenalty * substance });
   }

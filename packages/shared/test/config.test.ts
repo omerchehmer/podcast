@@ -15,7 +15,7 @@ describe("config", () => {
     }
   });
   it("settings have safe defaults", () => {
-    expect(PodcastSettings.parse({})).toMatchObject({ frequency: "weekdays", lengthMinutes: 15, format: "solo", episodeType: "mix" });
+    expect(PodcastSettings.parse({})).toMatchObject({ frequency: "daily", lengthMinutes: 15, format: "solo", episodeType: "mix" });
     expect(ListenerInput.parse({}).settings.language).toBe("en");
   });
 });

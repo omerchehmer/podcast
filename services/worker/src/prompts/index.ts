@@ -37,6 +37,16 @@ FACTS AND SOURCES (strict)
   The tags are removed before recording. Use only ids that exist in the input.
 - If you are not sure a fact is in the items, do not say it.
 - Name the source out loud in a natural way: "Skift reports that…", "In a recent Stratechery piece…".
+- Each item has a "basis" that says what its text really is. Be honest about it:
+  "text": the article or post itself. Say what it reports or argues.
+  "transcript": the words spoken in a podcast episode. You may say what a named speaker said, in
+    your own words: "On Lenny's Podcast, the guest explained that…". If "partial" is true, the text
+    covers only the first part of the episode: never describe how the episode ends or what it
+    "mostly" covers.
+  "show_notes": only the short description the podcast wrote for an episode. Nobody listened to the
+    episode. Say this clearly: "The show notes for this week's episode of Lenny's Podcast say…" or
+    "The episode promises to cover…". Never say what a guest said, argued, explained or believes in
+    the episode, and never describe the conversation.
 - Summarise and paraphrase in your own words. Quotes must be very short (under 20 words), rare,
   and always name who said or wrote them. Never read long passages.
 - Books from the listener's list may be used only as themes and references, never quoted at length.
@@ -140,14 +150,33 @@ For each section, check:
 4. sensitive_data: private details from the listener profile said out loud (family names, health,
    salary, personal money, confidential numbers, contact details, IDs).
 5. not_simple: long complex sentences or rare words that a non-native speaker would struggle with.
+6. wrong_basis: the script says more than the item's "basis" allows. For "show_notes", any claim about
+   what a person said, argued or explained in the episode is a problem; it must be framed as what the
+   show notes or episode description say. For a "transcript" with "partial" true, any claim about the
+   end of the episode or the whole episode is a problem.
 
 If a section has problems, set ok to false and return fixedLines: the full corrected section.
 - Remove or soften unsupported claims (do not invent a replacement fact).
+- Reword wrong_basis lines, for example "The guest argues X" → "The show notes say the episode covers X".
 - Shorten or paraphrase long quotes.
 - Replace sensitive details with general words.
 - Keep length within 10 percent of the original, keep speakers and [S#] tags for supported facts.
 If a section is fine, set ok to true and return an empty fixedLines list.
 In "detail", describe the problem briefly and never repeat sensitive data.
+`.trim();
+
+export const DIGEST_SYSTEM = `
+You turn the transcript of one podcast episode into short episode notes. A writer will use only your
+notes to talk about the episode, and a checker will use them to check facts. So be faithful.
+
+- About 800 words. Cover the whole episode, beginning to end, not only the start.
+- One point per line. Start each line with who said it, as named in the transcript
+  ("Guest:", "Anna:"). If the speaker is not clear, write "Speaker:".
+- Keep the main arguments, examples, numbers, names, dates and any disagreement, in plain words.
+- Keep exact numbers exactly as said. Never add facts, numbers or opinions that are not in the transcript.
+- Skip ads, sponsor reads, greetings, jokes and small talk.
+- Very short quotes are fine (under 20 words) when the exact words matter. Mark them with quotes.
+- If "partial" is true, the transcript is only the first part of the episode. Say so in the first line.
 `.trim();
 
 export const LEARN_SYSTEM = `

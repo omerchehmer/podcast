@@ -1,0 +1,1250 @@
+[
+  {
+    "categories": [
+      "travel",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "Skift",
+    "url": "https://skift.com/",
+    "feed_url": "https://skift.com/feed/",
+    "why": "The main daily business news for travel. Strong on OTAs, Airbnb, AI agents and travel demand, so it is still the best base source.",
+    "evidence": [
+      {
+        "label": "In Travel Trends Podcast's 'Top 10 Travel Industry Newsletters' (Skift Daily)",
+        "url": "https://www.traveltrendspodcast.com/blog/top-10-travel-industry-newsletters"
+      },
+      {
+        "label": "First pick in Revfine's list of travel industry podcasts for professionals",
+        "url": "https://www.revfine.com/travel-industry-podcasts/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "travel",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "Travel Tech Essentialist",
+    "url": "https://traveltechessentialist.substack.com/",
+    "feed_url": "https://traveltechessentialist.substack.com/feed",
+    "why": "A deep newsletter every two weeks on distribution, OTA stocks and AI in travel, by the co-founder of eDreams. It gives a strategy view, not only news.",
+    "evidence": [
+      {
+        "label": "Author Mauricio Prieto is the founder of eDreams (Mogu list of best travel newsletters)",
+        "url": "https://moguplatform.com/en/blog/10-best-travel-industry-newsletters"
+      },
+      {
+        "label": "#1 in Travel Trends Podcast's 'Top 10 Travel Industry Newsletters'",
+        "url": "https://www.traveltrendspodcast.com/blog/top-10-travel-industry-newsletters"
+      },
+      {
+        "label": "Calls itself the '#1 ranked travel business newsletter on Substack' (self-stated)",
+        "url": "https://traveltechessentialist.substack.com/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "travel",
+      "ai"
+    ],
+    "kind": "rss",
+    "title": "TNMT — Travel & Mobility Tech (Lufthansa Innovation Hub)",
+    "url": "https://tnmt.com/",
+    "feed_url": "https://tnmt.com/feed/",
+    "why": "Data-based research on travel and mobility tech, startups and investment. Good for ground transport and for how AI agents may change booking.",
+    "evidence": [
+      {
+        "label": "In Travel Trends Podcast's 'Top 10 Travel Industry Newsletters' (Lufthansa Innovation Hub – TNMT)",
+        "url": "https://www.traveltrendspodcast.com/blog/top-10-travel-industry-newsletters"
+      },
+      {
+        "label": "Research team from Lufthansa Innovation Hub, with mobility experience (FreeNow, DLR)",
+        "url": "https://tnmt.com/about/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "travel",
+      "startups"
+    ],
+    "kind": "podcast",
+    "title": "In Phocus (PhocusWire)",
+    "url": "https://www.phocuswire.com/",
+    "feed_url": "https://www.omnycontent.com/d/playlist/37ffe223-859b-4955-b6ca-aab8005d8b43/879749c5-2eb8-4629-a791-ae8700ce6ce8/95b45464-58cb-4896-b3c5-b1000134803a/podcast.rss",
+    "why": "Weekly talks with travel tech leaders, about AI, M&A and distribution. It replaces the PhocusWire website feed, which blocks bots.",
+    "evidence": [
+      {
+        "label": "PhocusWire is in Travel Trends Podcast's 'Top 10 Travel Industry Newsletters'",
+        "url": "https://www.traveltrendspodcast.com/blog/top-10-travel-industry-newsletters"
+      },
+      {
+        "label": "5.0★ on Apple Podcasts, but only 3 ratings (weak signal)",
+        "url": "https://podcasts.apple.com/us/podcast/in-phocus/id1727229211"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "travel",
+      "markets"
+    ],
+    "kind": "rss",
+    "title": "TTG Asia",
+    "url": "https://www.ttgasia.com/",
+    "feed_url": "https://www.ttgasia.com/feed/",
+    "why": "Daily trade news from Asia-Pacific, where 12Go works: Trip.com, airlines, tourism boards and demand in each country.",
+    "evidence": [
+      {
+        "label": "Asia-Pacific travel trade title since 1974 (self-described)",
+        "url": "https://www.ttgasia.com/about-us/"
+      }
+    ],
+    "trust": 0.75
+  },
+  {
+    "categories": [
+      "travel",
+      "strategy"
+    ],
+    "kind": "podcast",
+    "title": "The Skift Travel Podcast",
+    "url": "https://skift.com/",
+    "feed_url": "https://feeds.megaphone.fm/SKIFT8999081027",
+    "why": "Every week Skift's research head Seth Borko explains one big trend with data. Good for long-term thinking about demand.",
+    "evidence": [
+      {
+        "label": "4.2★ from 39 ratings on Apple Podcasts",
+        "url": "https://podcasts.apple.com/us/podcast/the-skift-travel-podcast/id999975096"
+      },
+      {
+        "label": "First pick in Revfine's list of travel industry podcasts",
+        "url": "https://www.revfine.com/travel-industry-podcasts/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "travel",
+      "startups"
+    ],
+    "kind": "book",
+    "title": "The Upstarts — Brad Stone",
+    "url": "https://www.goodreads.com/book/show/29905580-the-upstarts",
+    "feed_url": null,
+    "why": "The story of Uber and Airbnb: how marketplaces for rides and stays grew, fought regulators and won. Very close to a mobility and travel marketplace.",
+    "evidence": [
+      {
+        "label": "Literary Review calls it an 'excellent' account of Uber and Airbnb",
+        "url": "https://literaryreview.co.uk/fair-share"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "travel",
+      "strategy"
+    ],
+    "kind": "book",
+    "title": "The Airbnb Story — Leigh Gallagher",
+    "url": "https://www.goodreads.com/book/show/32198220-the-airbnb-story",
+    "feed_url": null,
+    "why": "How Airbnb grew into a giant of online travel, and its fights with cities and hotels. Useful now that Airbnb moves into hotels and AI agents.",
+    "evidence": [
+      {
+        "label": "Kirkus: 'a quick and instructive read'; author is an assistant managing editor at Fortune",
+        "url": "https://www.kirkusreviews.com/book-reviews/leigh-gallagher/the-airbnb-story/"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "leadership",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "Harvard Business Review",
+    "url": "https://hbr.org",
+    "feed_url": "http://feeds.hbr.org/harvardbusiness",
+    "why": "The standard source for management research. Many short, practical articles each day on leading people, decisions and AI at work.",
+    "evidence": [
+      {
+        "label": "Published by Harvard Business Publishing, an affiliate of Harvard Business School",
+        "url": "https://hbr.org/corporate/about"
+      }
+    ],
+    "trust": 0.95
+  },
+  {
+    "categories": [
+      "leadership",
+      "strategy"
+    ],
+    "kind": "podcast",
+    "title": "HBR IdeaCast",
+    "url": "https://hbr.org/podcasts/ideacast",
+    "feed_url": "http://feeds.harvardbusiness.org/harvardbusiness/ideacast",
+    "why": "Short weekly interviews with researchers and CEOs. Each episode gives one clear management idea you can use.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts rating 4.3 from 1.7K ratings (US)",
+        "url": "https://podcasts.apple.com/us/podcast/hbr-ideacast/id152022135"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "leadership",
+      "startups"
+    ],
+    "kind": "rss",
+    "title": "First Round Review",
+    "url": "https://review.firstround.com",
+    "feed_url": "https://review.firstround.com/articles/rss/",
+    "why": "Very practical, long guides from real operators on org design, hiring, meetings and scaling teams. Good for a COO who wants to copy what works.",
+    "evidence": [
+      {
+        "label": "\"200K+ readers subscribe to The Review\" (stated on its homepage)",
+        "url": "https://review.firstround.com/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "leadership",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "MIT Sloan Management Review",
+    "url": "https://sloanreview.mit.edu",
+    "feed_url": "https://sloanreview.mit.edu/feed/",
+    "why": "Research-based articles on how AI and technology change the way companies are managed. Often gives balanced tradeoffs, not hype.",
+    "evidence": [
+      {
+        "label": "Founded 1977, owned by MIT, editorially independent",
+        "url": "https://sloanreview.mit.edu/about/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "leadership",
+      "ai"
+    ],
+    "kind": "rss",
+    "title": "Charter — the future of work",
+    "url": "https://www.charterworks.com",
+    "feed_url": "https://www.charterworks.com/feed/",
+    "why": "News and research on how to run teams well, with a strong focus on AI at work. Useful playbooks for an AI-first company.",
+    "evidence": [
+      {
+        "label": "Founded 2020 by Kevin Delaney (ex-WSJ managing editor, Quartz co-founder) and others; publishes on TIME.com",
+        "url": "https://www.charterworks.com/about/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "leadership",
+      "ai"
+    ],
+    "kind": "rss",
+    "title": "One Useful Thing — Ethan Mollick",
+    "url": "https://www.oneusefulthing.org",
+    "feed_url": "https://www.oneusefulthing.org/feed",
+    "why": "A Wharton professor explains what new AI means for work and organizations. Clear and honest about what AI can and cannot do yet.",
+    "evidence": [
+      {
+        "label": "Over 478,000 subscribers (Substack page)",
+        "url": "https://www.oneusefulthing.org/about"
+      },
+      {
+        "label": "Named in TIME100 AI 2024",
+        "url": "https://time.com/collections/time100-ai-2024/7012859/ethan-mollick/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "leadership",
+      "strategy"
+    ],
+    "kind": "podcast",
+    "title": "The Knowledge Project",
+    "url": "https://fs.blog/knowledge-project-podcast/",
+    "feed_url": "https://feeds.megaphone.fm/FSMI7575968096",
+    "why": "Long talks with top CEOs and thinkers about decisions and leading well. Recent guest: Shopify CEO Tobi Lütke on skills AI makes more valuable.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts rating 4.7 from 2.6K ratings (US)",
+        "url": "https://podcasts.apple.com/us/podcast/the-knowledge-project/id990149481"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "leadership",
+      "careers"
+    ],
+    "kind": "podcast",
+    "title": "Manager Tools",
+    "url": "https://www.manager-tools.com",
+    "feed_url": "https://files.manager-tools.com/public/feeds/manager-tools-podcasts.xml",
+    "why": "Very concrete how-to advice on one-on-ones, feedback and delegation. Good for building strong managers below you.",
+    "evidence": [
+      {
+        "label": "Best Business Podcast (Podcast Awards) 2006, 2007, 2008, 2012; People's Choice 2008",
+        "url": "https://en.wikipedia.org/wiki/Manager_Tools_Podcast"
+      },
+      {
+        "label": "Apple Podcasts rating 4.6 from 1.2K ratings (US)",
+        "url": "https://podcasts.apple.com/us/podcast/manager-tools/id74198801"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "careers",
+      "leadership"
+    ],
+    "kind": "rss",
+    "title": "Wes Kao's Newsletter",
+    "url": "https://newsletter.weskao.com",
+    "feed_url": "https://newsletter.weskao.com/feed",
+    "why": "Clear lessons on managing up, writing and thinking sharply at work. Easy to read and full of examples.",
+    "evidence": [
+      {
+        "label": "Co-founder of Maven and of the altMBA (with Seth Godin); 80,000+ operators and leaders read it",
+        "url": "https://newsletter.weskao.com/about"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "careers"
+    ],
+    "kind": "podcast",
+    "title": "Career Tools",
+    "url": "https://www.manager-tools.com",
+    "feed_url": "https://files.manager-tools.com/public/feeds/career_tools_podcasts.xml",
+    "why": "Weekly, step-by-step career advice: interviews, writing, working with your boss. Practical for anyone who wants to grow.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts rating 4.4 from 367 ratings (US)",
+        "url": "https://podcasts.apple.com/us/podcast/career-tools/id299826841"
+      },
+      {
+        "label": "Won the business category of the People's Choice Podcast Awards",
+        "url": "https://en.wikipedia.org/wiki/Manager_Tools_Podcast"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "careers"
+    ],
+    "kind": "podcast",
+    "title": "Squiggly Careers",
+    "url": "https://www.squigglycareers.com",
+    "feed_url": "https://feeds.megaphone.fm/APL9013254409",
+    "why": "Short, friendly episodes on learning, confidence and changing roles. Good for people whose career is not a straight line.",
+    "evidence": [
+      {
+        "label": "More than 6 million downloads; hosts wrote 3 Sunday Times bestsellers",
+        "url": "https://www.squigglycareers.com/about/"
+      },
+      {
+        "label": "Apple Podcasts rating 4.9 from 793 ratings (UK)",
+        "url": "https://podcasts.apple.com/gb/podcast/squiggly-careers/id1202842065"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "leadership"
+    ],
+    "kind": "book",
+    "title": "High Output Management — Andy Grove",
+    "url": "https://en.wikipedia.org/wiki/High_Output_Management",
+    "feed_url": null,
+    "why": "The classic operator book from Intel's CEO: output, leverage, meetings and one-on-ones. Still the base for how a COO thinks.",
+    "evidence": [
+      {
+        "label": "Praised by Mark Zuckerberg, Brian Chesky, Ben Horowitz; reissued 2015 due to demand",
+        "url": "https://en.wikipedia.org/wiki/High_Output_Management"
+      }
+    ],
+    "trust": 0.95
+  },
+  {
+    "categories": [
+      "leadership"
+    ],
+    "kind": "book",
+    "title": "Working Backwards — Colin Bryar and Bill Carr",
+    "url": "https://workingbackwards.com/",
+    "feed_url": null,
+    "why": "How Amazon uses single-threaded leaders, written narratives and clear metrics. Direct help for fewer layers and faster decisions.",
+    "evidence": [
+      {
+        "label": "Authors spent a combined 27 years as senior Amazon executives; praised by Jeff Wilke and Kim Scott",
+        "url": "https://workingbackwards.com/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "leadership"
+    ],
+    "kind": "book",
+    "title": "Scaling People — Claire Hughes Johnson",
+    "url": "https://press.stripe.com/scaling-people",
+    "feed_url": null,
+    "why": "A COO's handbook with templates for goals, operating rhythm, hiring and feedback. Written by someone who did the same job.",
+    "evidence": [
+      {
+        "label": "Author was Stripe COO 2014–2021, grew it from under 200 to 7,000+ people",
+        "url": "https://press.stripe.com/scaling-people"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "careers"
+    ],
+    "kind": "book",
+    "title": "Range — David Epstein",
+    "url": "https://davidepstein.com/range/",
+    "feed_url": null,
+    "why": "Shows why broad experience often beats early specialization. Useful when planning a career in a fast-changing world.",
+    "evidence": [
+      {
+        "label": "#1 NYT bestseller; on Bill Gates' Holiday Books 2020 list",
+        "url": "https://www.apbspeakers.com/blog/posts/2020/december/david-epstein-s-range-makes-bill-gates-holiday-books-2020-list/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "strategy",
+      "ai"
+    ],
+    "kind": "rss",
+    "title": "Stratechery",
+    "url": "https://stratechery.com",
+    "feed_url": "https://stratechery.com/feed/",
+    "why": "The best writing on tech strategy, platforms and aggregators. It helps you see how AI changes who wins in online marketplaces.",
+    "evidence": [
+      {
+        "label": "Fortune Creator 25 (2021); readers in 85 countries",
+        "url": "https://fortune.com/ranking/creator-25/2021/ben-thompson-stratechery"
+      },
+      {
+        "label": "Author: Kellogg MBA, ex-Microsoft; writing since 2013",
+        "url": "https://stratechery.com/about/"
+      }
+    ],
+    "trust": 0.95
+  },
+  {
+    "categories": [
+      "strategy",
+      "startups"
+    ],
+    "kind": "podcast",
+    "title": "Acquired",
+    "url": "https://www.acquired.fm",
+    "feed_url": "https://feeds.transistor.fm/acquired",
+    "why": "Deep stories of how great companies were built and why they win. Full of lessons on competitive advantage and business models.",
+    "evidence": [
+      {
+        "label": "WSJ (2024): 'the business world's favorite podcast'; 1M+ listeners per episode",
+        "url": "https://en.wikipedia.org/wiki/Acquired"
+      },
+      {
+        "label": "Time: 100 Best Podcasts of All Time (2025)",
+        "url": "https://en.wikipedia.org/wiki/Acquired"
+      },
+      {
+        "label": "Over one million listeners per episode; WSJ: 'The smartest people in the room are all listening'",
+        "url": "https://www.acquired.fm/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "strategy",
+      "ai"
+    ],
+    "kind": "rss",
+    "title": "Platforms, AI & the Economics of BigTech",
+    "url": "https://platforms.substack.com",
+    "feed_url": "https://platforms.substack.com/feed",
+    "why": "Sangeet Paul Choudary explains how platforms and marketplaces win, and how AI moves value between companies. Very close to a travel marketplace's problems.",
+    "evidence": [
+      {
+        "label": "41,000+ subscribers (stated on site)",
+        "url": "https://platforms.substack.com/"
+      },
+      {
+        "label": "Author of two bestselling platform books; advised 40+ Fortune 500 firms; Senior Fellow, UC Berkeley",
+        "url": "https://platforms.substack.com/about"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "markets",
+      "geopolitics"
+    ],
+    "kind": "podcast",
+    "title": "FT News Briefing",
+    "url": "https://www.ft.com/ft-news-briefing",
+    "feed_url": "https://feeds.acast.com/public/shows/73fe3ede-5c5c-4850-96a8-30db8dbae8bf",
+    "why": "About 10 minutes every weekday on the most important global business and market news. A fast, reliable start to the day.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.4/5 (519 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/ft-news-briefing/id1438449989"
+      },
+      {
+        "label": "#2 on PodcastReview's '11 Best Daily News Podcasts 2026'",
+        "url": "https://podcastreview.org/list/best-daily-news-podcasts/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "markets"
+    ],
+    "kind": "podcast",
+    "title": "Odd Lots",
+    "url": "https://www.bloomberg.com/oddlots",
+    "feed_url": "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/8a94442e-5a74-4fa2-8b8d-ae27003a8d6b/982f5071-765c-403d-969d-ae27003a8d83/podcast.rss",
+    "why": "Bloomberg hosts talk with real experts about markets, rates, trade and supply chains. Great for understanding the forces behind demand and FX.",
+    "evidence": [
+      {
+        "label": "Webby Award nominee, best business podcast (2022)",
+        "url": "https://en.wikipedia.org/wiki/Tracy_Alloway_(journalist)"
+      },
+      {
+        "label": "Apple Podcasts 4.5/5 (1,918 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/odd-lots/id1056200096"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "markets"
+    ],
+    "kind": "podcast",
+    "title": "The Indicator from Planet Money",
+    "url": "https://www.npr.org/podcasts/510325/the-indicator-from-planet-money",
+    "feed_url": "https://feeds.npr.org/510325/podcast.xml",
+    "why": "One economic idea in under 10 minutes, every weekday, in simple English. Easier and more frequent than Planet Money.",
+    "evidence": [
+      {
+        "label": "Ambies 2026: Best Business Podcast (winner)",
+        "url": "https://www.ambies.com/2026-press-release-winners"
+      },
+      {
+        "label": "Apple Podcasts 4.7/5 (9,335 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/the-indicator-from-planet-money/id1320118593"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "markets"
+    ],
+    "kind": "rss",
+    "title": "The Economist — Finance & economics",
+    "url": "https://www.economist.com/finance-and-economics",
+    "feed_url": "https://www.economist.com/finance-and-economics/rss.xml",
+    "why": "Clear global view of economies, currencies and emerging markets like Asia and Latin America. Good for spotting demand risks early.",
+    "evidence": [
+      {
+        "label": "Founded 1843; 1.255M print+digital circulation (Sept 2025)",
+        "url": "https://en.wikipedia.org/wiki/The_Economist"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "geopolitics",
+      "markets"
+    ],
+    "kind": "podcast",
+    "title": "The Intelligence (The Economist)",
+    "url": "https://www.economist.com/podcasts",
+    "feed_url": "https://access.acast.com/rss/d556eb54-6160-4c85-95f4-47d9f5216c49",
+    "why": "Every weekday, three world stories from Economist reporters in many countries. Balanced, global and short.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.5/5 (2,454 ratings); described as award-winning",
+        "url": "https://podcasts.apple.com/us/podcast/the-intelligence-from-the-economist/id1449631195"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "geopolitics"
+    ],
+    "kind": "podcast",
+    "title": "GZERO World with Ian Bremmer",
+    "url": "https://www.gzeromedia.com",
+    "feed_url": "https://feeds.simplecast.com/ibBxsiVV",
+    "why": "Political risk explained by the founder of Eurasia Group, the top political risk firm. Useful for thinking about risk to travel and business.",
+    "evidence": [
+      {
+        "label": "Multiple Telly Awards; 5M+ viewers monthly",
+        "url": "https://www.eurasiagroup.net/media/gzero-world-with-ian-bremmer-premieres-season-7-on-public-television-beginning-july-5"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "geopolitics"
+    ],
+    "kind": "podcast",
+    "title": "The Foreign Affairs Interview",
+    "url": "https://www.foreignaffairs.com/podcasts/foreign-affairs-interview",
+    "feed_url": "https://feed.podbean.com/foreignaffairsmagazine/feed.xml",
+    "why": "Weekly talks with leading experts on China, the US, Middle East and energy. Serious and fair, not partisan.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.7/5 (487 ratings); host is Foreign Affairs editor Dan Kurtz-Phelan",
+        "url": "https://podcasts.apple.com/us/podcast/the-foreign-affairs-interview/id1623855270"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "geopolitics",
+      "markets"
+    ],
+    "kind": "podcast",
+    "title": "The Americas Quarterly Podcast",
+    "url": "https://www.americasquarterly.org",
+    "feed_url": "https://rss.buzzsprout.com/2066030.rss",
+    "why": "Weekly 30-minute talks on politics and economy in Latin America, a key Travelier region. Hosted by a former Reuters reporter.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.8/5 (116 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/the-americas-quarterly-podcast/id1099672310"
+      },
+      {
+        "label": "Host Brian Winter: AQ editor-in-chief, 25+ years covering Latin America",
+        "url": "https://www.americasquarterly.org/aq-author/brian-winter/"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "strategy"
+    ],
+    "kind": "book",
+    "title": "Good Strategy Bad Strategy — Richard Rumelt",
+    "url": "https://en.wikipedia.org/wiki/Richard_Rumelt",
+    "feed_url": null,
+    "why": "Shows how to find the real problem and make a focused plan. Perfect for leading in an uncertain world.",
+    "evidence": [
+      {
+        "label": "FT & Goldman Sachs Business Book of the Year finalist",
+        "url": "https://en.wikipedia.org/wiki/Richard_Rumelt"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "strategy"
+    ],
+    "kind": "book",
+    "title": "7 Powers — Hamilton Helmer",
+    "url": "https://7powers.com",
+    "feed_url": null,
+    "why": "A simple model of the seven sources of lasting advantage, like network effects and scale. Great for judging a marketplace's moat.",
+    "evidence": [
+      {
+        "label": "Foreword by Netflix co-founder Reed Hastings",
+        "url": "https://www.audible.com/pd/7-Powers-Audiobook/B0DJC12RZ3"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "markets"
+    ],
+    "kind": "book",
+    "title": "How Asia Works — Joe Studwell",
+    "url": "https://groveatlantic.com/book/how-asia-works/",
+    "feed_url": null,
+    "why": "Explains why some Asian economies grew fast and others did not. Helps you understand the markets where Travelier sells.",
+    "evidence": [
+      {
+        "label": "Recommended by Bill Gates (2014), required reading for a Gates Foundation team",
+        "url": "https://www.theinvestorspodcast.com/episodes/how-asia-works-joe-studwell/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "geopolitics",
+      "ai"
+    ],
+    "kind": "book",
+    "title": "Chip War — Chris Miller",
+    "url": "https://en.wikipedia.org/wiki/Chip_War",
+    "feed_url": null,
+    "why": "The story of the fight over computer chips between the US, China and Taiwan. Key to understanding AI and Asia risk.",
+    "evidence": [
+      {
+        "label": "Financial Times Business Book of the Year 2022",
+        "url": "https://en.wikipedia.org/wiki/Chip_War"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "ai"
+    ],
+    "kind": "podcast",
+    "title": "The AI Daily Brief",
+    "url": "https://aidailybrief.ai/",
+    "feed_url": "https://anchor.fm/s/f7cac464/podcast/rss",
+    "why": "A short daily show on AI news with a business view: agents, enterprise adoption, and what it means for work. Good to stay current each day.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.7/5 (857 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/the-ai-daily-brief-artificial-intelligence-news/id1680633614"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "ai",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "Exponential View (Azeem Azhar)",
+    "url": "https://www.exponentialview.co/",
+    "feed_url": "https://www.exponentialview.co/feed",
+    "why": "Big-picture view of how AI changes the economy, business and jobs, with data and charts. Written for leaders and investors.",
+    "evidence": [
+      {
+        "label": "100,000+ readers incl. investors, founders, policy-makers",
+        "url": "https://www.exponentialview.co/about"
+      },
+      {
+        "label": "Named in 'Best AI Newsletters Every Executive Should Subscribe to' (Analytics Insight)",
+        "url": "https://www.analyticsinsight.net/artificial-intelligence/best-ai-newsletters-every-executive-should-subscribe-to"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "ai",
+      "strategy"
+    ],
+    "kind": "rss",
+    "title": "Benedict Evans",
+    "url": "https://www.ben-evans.com/",
+    "feed_url": "https://www.ben-evans.com/benedictevans?format=rss",
+    "why": "Calm, long-term essays on what AI means for business models, pricing and jobs. Few posts, but each one is high quality.",
+    "evidence": [
+      {
+        "label": "Newsletter reaches ~200,000 subscribers weekly",
+        "url": "https://www.ben-evans.com/newsletter"
+      },
+      {
+        "label": "Praised by Steven Sinofsky and Om Malik",
+        "url": "https://www.ben-evans.com/newsletter"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "ai",
+      "startups"
+    ],
+    "kind": "podcast",
+    "title": "No Priors",
+    "url": "https://www.nopriors.com/",
+    "feed_url": "https://feeds.megaphone.fm/nopriors",
+    "why": "Two top AI investors talk with the founders and CEOs building AI products, including how older companies re-build for the AI era.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.4/5 (151 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/no-priors-artificial-intelligence-technology-startups/id1668002688"
+      },
+      {
+        "label": "Hosts Elad Gil (investor in 40+ billion-dollar companies) and Sarah Guo (Conviction)",
+        "url": "https://podcasts.apple.com/us/podcast/no-priors-artificial-intelligence-technology-startups/id1668002688"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "product"
+    ],
+    "kind": "rss",
+    "title": "Lenny's Newsletter",
+    "url": "https://www.lennysnewsletter.com/",
+    "feed_url": "https://www.lennysnewsletter.com/feed",
+    "why": "The most-read product newsletter: clear, practical advice on product, growth and now AI in product teams.",
+    "evidence": [
+      {
+        "label": "1,000,000+ subscribers",
+        "url": "https://www.lennysnewsletter.com/about"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "product",
+      "careers"
+    ],
+    "kind": "podcast",
+    "title": "Lenny's Podcast",
+    "url": "https://www.lennysnewsletter.com/podcast",
+    "feed_url": "https://api.substack.com/feed/podcast/10845.rss",
+    "why": "Long interviews with top product leaders with concrete, tactical lessons you can use with your teams.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.9/5 (1,414 ratings)",
+        "url": "https://podcasts.apple.com/us/podcast/lennys-podcast-product-career-growth/id1627920305"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "product",
+      "leadership"
+    ],
+    "kind": "rss",
+    "title": "SVPG (Marty Cagan)",
+    "url": "https://www.svpg.com/articles/",
+    "feed_url": "https://www.svpg.com/feed/",
+    "why": "Short articles on how strong product companies work, from the author of Inspired. Good for a company moving to a new operating model with AI.",
+    "evidence": [
+      {
+        "label": "Author of INSPIRED, EMPOWERED, TRANSFORMED; ex-SVP product at eBay",
+        "url": "https://www.svpg.com/team/marty-cagan/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "startups",
+      "markets"
+    ],
+    "kind": "podcast",
+    "title": "20VC (Harry Stebbings)",
+    "url": "https://www.20vc.com/",
+    "feed_url": "https://rss.libsyn.com/shows/61840/destinations/240976.xml",
+    "why": "Daily view of the venture market and AI deals from top investors and founders. Good for knowing where money and competition are moving.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.4/5 (527 ratings); guests incl. Doug Leone, Bill Gurley",
+        "url": "https://podcasts.apple.com/us/podcast/the-twenty-minute-vc-20vc-venture-capital-startup/id958230465"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "startups",
+      "leadership"
+    ],
+    "kind": "podcast",
+    "title": "In Depth (First Round)",
+    "url": "https://review.firstround.com/podcast/",
+    "feed_url": "https://feeds.megaphone.fm/FRCH6787238462",
+    "why": "Tactical operator lessons from COOs, CEOs and leaders of fast-growing companies, e.g. COOs of Plaid and Checkr. Very close to your job.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.8/5 (59 ratings); by First Round Capital, host Brett Berson",
+        "url": "https://podcasts.apple.com/us/podcast/in-depth/id1535886300"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "startups",
+      "leadership"
+    ],
+    "kind": "podcast",
+    "title": "Masters of Scale",
+    "url": "https://mastersofscale.com/",
+    "feed_url": "https://rss.art19.com/masters-of-scale",
+    "why": "Well-known leaders share how they grew their companies, in clear and easy English. Founded by Reid Hoffman.",
+    "evidence": [
+      {
+        "label": "Apple Podcasts 4.6/5 (3,958 ratings); founding host Reid Hoffman",
+        "url": "https://podcasts.apple.com/us/podcast/masters-of-scale/id1227971746"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "ai",
+      "leadership"
+    ],
+    "kind": "book",
+    "title": "Co-Intelligence — Ethan Mollick",
+    "url": "https://www.oneusefulthing.org/about",
+    "feed_url": null,
+    "why": "A simple, practical guide to working with AI as a coworker. The best starting book for leading AI adoption.",
+    "evidence": [
+      {
+        "label": "Bestseller; author is Wharton professor",
+        "url": "https://www.oneusefulthing.org/about"
+      },
+      {
+        "label": "Author on TIME100 AI 2024",
+        "url": "https://time.com/collections/time100-ai-2024/7012859/ethan-mollick/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "ai",
+      "strategy"
+    ],
+    "kind": "book",
+    "title": "Power and Prediction — Agrawal, Gans, Goldfarb",
+    "url": "https://www.avigoldfarb.com/powerandprediction",
+    "feed_url": null,
+    "why": "Three economists explain how AI changes decisions, whole business systems and who holds power in an industry. Very useful for an AI-first redesign of operations.",
+    "evidence": [
+      {
+        "label": "By the authors of the bestselling Prediction Machines (University of Toronto economists)",
+        "url": "https://www.avigoldfarb.com/powerandprediction"
+      }
+    ],
+    "trust": 0.8
+  },
+  {
+    "categories": [
+      "product"
+    ],
+    "kind": "book",
+    "title": "Inspired — Marty Cagan",
+    "url": "https://www.svpg.com/books/inspired-how-to-create-tech-products-customers-love-2nd-edition/",
+    "feed_url": null,
+    "why": "The standard book on how good product teams find and build products customers love.",
+    "evidence": [
+      {
+        "label": "Publisher page: 'the primary reference for technology product managers'",
+        "url": "https://www.svpg.com/books/inspired-how-to-create-tech-products-customers-love-2nd-edition/"
+      },
+      {
+        "label": "Author ex-SVP product and design at eBay",
+        "url": "https://www.svpg.com/team/marty-cagan/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "startups",
+      "leadership"
+    ],
+    "kind": "book",
+    "title": "The Hard Thing About Hard Things — Ben Horowitz",
+    "url": "https://a16z.com/books/the-hard-thing-about-hard-things/",
+    "feed_url": null,
+    "why": "Honest lessons on the hardest parts of running a company: layoffs, crises, hard people decisions. Very relevant when AI changes headcount.",
+    "evidence": [
+      {
+        "label": "New York Times bestseller; praised by Larry Page and Mark Zuckerberg",
+        "url": "https://a16z.com/books/the-hard-thing-about-hard-things/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "science"
+    ],
+    "kind": "rss",
+    "title": "Quanta Magazine",
+    "url": "https://www.quantamagazine.org",
+    "feed_url": "https://www.quantamagazine.org/feed/",
+    "why": "Deep but clear stories about new ideas in physics, math, biology and computer science. Editorially independent and very careful.",
+    "evidence": [
+      {
+        "label": "Won the 2022 Pulitzer Prize for Explanatory Reporting",
+        "url": "https://www.quantamagazine.org/quantanews/quanta-magazines-natalie-wolchover-and-staff-awarded-the-2022-pulitzer-prize-for-explanatory-writing/"
+      },
+      {
+        "label": "Won 2025 National Magazine Award (Best Single-Topic Issue)",
+        "url": "https://www.quantamagazine.org/quantanews/quanta-wins-2025-national-magazine-award-for-best-single-topic-issue-and-webby-peoples-voice-award/"
+      }
+    ],
+    "trust": 0.95
+  },
+  {
+    "categories": [
+      "science",
+      "health"
+    ],
+    "kind": "rss",
+    "title": "Science News",
+    "url": "https://www.sciencenews.org",
+    "feed_url": "https://www.sciencenews.org/feed",
+    "why": "Short, accurate news about new research in science and medicine, several stories a day. A nonprofit newsroom since 1921.",
+    "evidence": [
+      {
+        "label": "Independent nonprofit, founded 1921, published by Society for Science",
+        "url": "https://www.sciencenews.org/about-science-news"
+      },
+      {
+        "label": "FOLIO Eddie award and Webby Official Honoree (2014)",
+        "url": "https://www.societyforscience.org/blog/science-news-wins-awards/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "science"
+    ],
+    "kind": "podcast",
+    "title": "Nature Podcast",
+    "url": "https://www.nature.com/nature/podcast",
+    "feed_url": "https://feeds.acast.com/public/shows/0185cea5-9e3b-4b82-a887-26f91f92765f",
+    "why": "Weekly show from the journal Nature about the most important new research. You hear from the scientists who did the work.",
+    "evidence": [
+      {
+        "label": "Published by Springer Nature Limited (Apple Podcasts)",
+        "url": "https://podcasts.apple.com/us/podcast/nature-podcast/id81934659"
+      },
+      {
+        "label": "Covers the top research in each issue of Nature (feed description)",
+        "url": "https://feeds.acast.com/public/shows/0185cea5-9e3b-4b82-a887-26f91f92765f"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "science"
+    ],
+    "kind": "book",
+    "title": "A Short History of Nearly Everything — Bill Bryson",
+    "url": "https://en.wikipedia.org/wiki/A_Short_History_of_Nearly_Everything",
+    "feed_url": null,
+    "why": "A fun, easy tour of how we know what we know about the universe, Earth and life. Great for big themes about science.",
+    "evidence": [
+      {
+        "label": "Won the 2004 Aventis Prize for best general science book",
+        "url": "https://en.wikipedia.org/wiki/A_Short_History_of_Nearly_Everything"
+      },
+      {
+        "label": "Won the 2005 Descartes Prize for science communication",
+        "url": "https://en.wikipedia.org/wiki/A_Short_History_of_Nearly_Everything"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "health",
+      "science"
+    ],
+    "kind": "rss",
+    "title": "Your Local Epidemiologist",
+    "url": "https://yourlocalepidemiologist.substack.com",
+    "feed_url": "https://yourlocalepidemiologist.substack.com/feed",
+    "why": "An epidemiologist explains health news and new studies in plain words, with the data. Calm and evidence-based, not hype.",
+    "evidence": [
+      {
+        "label": "Author Katelyn Jetelina won the 2024 Axelrod Prize in Public Health",
+        "url": "https://www.albany.edu/cihs/news/2024-katelyn-jetelina-awarded-axelrod-prize-public-health"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "health"
+    ],
+    "kind": "rss",
+    "title": "STAT",
+    "url": "https://www.statnews.com",
+    "feed_url": "https://www.statnews.com/feed/",
+    "why": "Top newsroom for health, medicine and biotech news. Good for what is changing in drugs, the FDA and health care.",
+    "evidence": [
+      {
+        "label": "Won its fourth George Polk Award in five years (2026)",
+        "url": "https://www.statnews.com/2026/02/18/stat-wins-polk-award-reporting-trump-science-fda/"
+      },
+      {
+        "label": "Pulitzer Prize finalist for early COVID-19 coverage",
+        "url": "https://www.statnews.com/stat-awards/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "health"
+    ],
+    "kind": "podcast",
+    "title": "The Peter Attia Drive",
+    "url": "https://peterattiamd.com/podcast/",
+    "feed_url": "https://rss.libsyn.com/shows/121729/destinations/713489.xml",
+    "why": "A doctor talks in depth with experts about exercise, sleep, nutrition and long life. Long and detailed, with careful talk about evidence.",
+    "evidence": [
+      {
+        "label": "Over 100 million downloads (show page)",
+        "url": "https://peterattiamd.com/podcast/"
+      }
+    ],
+    "trust": 0.75
+  },
+  {
+    "categories": [
+      "health"
+    ],
+    "kind": "book",
+    "title": "Outlive — Peter Attia",
+    "url": "https://peterattiamd.com/outlive/",
+    "feed_url": null,
+    "why": "A practical guide to living longer and healthier: exercise, sleep, food and early checks. Replaces 'Why We Sleep', which has known accuracy problems.",
+    "evidence": [
+      {
+        "label": "#1 New York Times bestseller",
+        "url": "https://peterattiamd.com/outlive/"
+      },
+      {
+        "label": "Critique of 'Why We Sleep' (reason for replacing it)",
+        "url": "https://guzey.com/books/why-we-sleep/"
+      }
+    ],
+    "trust": 0.75
+  },
+  {
+    "categories": [
+      "climate",
+      "science"
+    ],
+    "kind": "rss",
+    "title": "Carbon Brief",
+    "url": "https://www.carbonbrief.org",
+    "feed_url": "https://www.carbonbrief.org/feed/",
+    "why": "Clear, data-driven reporting on climate science, policy and energy. Very trusted by experts.",
+    "evidence": [
+      {
+        "label": "Press Gazette Future of Media Awards 2024: website of the year (specialist)",
+        "url": "https://www.carbonbrief.org/about-us/"
+      },
+      {
+        "label": "Funding is shown openly (European Climate Foundation, Meliore Foundation)",
+        "url": "https://www.carbonbrief.org/about-us/"
+      }
+    ],
+    "trust": 0.9
+  },
+  {
+    "categories": [
+      "climate",
+      "markets"
+    ],
+    "kind": "rss",
+    "title": "Heatmap News",
+    "url": "https://heatmap.news",
+    "feed_url": "https://heatmap.news/feeds/feed.rss",
+    "why": "Fast daily news on climate, clean energy, politics and business. Good for knowing what changed today.",
+    "evidence": [
+      {
+        "label": "Won the 2025 National Magazine Award for Service Journalism",
+        "url": "https://heatmap.news/sparks/heatmap-national-magazine-award"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "climate",
+      "startups"
+    ],
+    "kind": "podcast",
+    "title": "Catalyst with Shayle Kann",
+    "url": "https://www.latitudemedia.com/podcasts/catalyst/",
+    "feed_url": "https://feeds.megaphone.fm/catalyst",
+    "why": "A climate-tech investor talks each week with experts about energy, new technology and money. Useful for business readers.",
+    "evidence": [
+      {
+        "label": "New episode every Thursday; host is a veteran energy investor",
+        "url": "https://www.latitudemedia.com/podcasts/catalyst/"
+      }
+    ],
+    "trust": 0.85
+  },
+  {
+    "categories": [
+      "climate"
+    ],
+    "kind": "book",
+    "title": "Not the End of the World — Hannah Ritchie",
+    "url": "https://www.hachettebookgroup.com/titles/hannah-ritchie/not-the-end-of-the-world/9780316536752/",
+    "feed_url": null,
+    "why": "A data scientist shows with clear data where we are winning and losing on climate and nature. Hopeful but honest.",
+    "evidence": [
+      {
+        "label": "Bill Gates reviewed it as an optimistic, data-rich book",
+        "url": "https://www.gatesnotes.com/Not-the-End-of-the-World"
+      }
+    ],
+    "trust": 0.85
+  }
+]

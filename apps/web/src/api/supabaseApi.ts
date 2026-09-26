@@ -129,22 +129,32 @@ export class SupabaseApi implements Api {
   // ---------- sources ----------
 
   async getDiscoverySources(): Promise<SourceOption[]> {
-    const rows = must(await this.db.from("sources").select("id, kind, title, url, discovery_categories").eq("is_discovery", true).order("title")) as Row[];
-    return rows.map((r) => ({ id: r.id, kind: r.kind, title: r.title, url: r.url, categories: r.discovery_categories }));
+    let res = await this.db.from("sources")
+      .select("id, kind, title, url, discovery_categories, why, evidence, discovery_trust")
+      .eq("is_discovery", true).order("discovery_trust", { ascending: false });
+    // Until migration 20260925000001 is applied, the reason columns do not exist yet.
+    if (res.error) res = await this.db.from("sources").select("id, kind, title, url, discovery_categories").eq("is_discovery", true).order("title") as typeof res;
+    const rows = must(res) as Row[];
+    return rows.map((r) => ({
+      id: r.id, kind: r.kind, title: r.title, url: r.url, categories: r.discovery_categories,
+      why: r.why, evidence: r.evidence ?? [], quality: r.discovery_trust,
+    }));
   }
 
   async getMySources(): Promise<MySource[]> {
-    const rows = must(await this.db.from("user_sources")
-      .select("source_id, added_by, trust, sources(id, kind, title, url, discovery_categories)")
-      .eq("user_id", await this.uid())) as Row[];
+    const uid = await this.uid();
+    let res = await this.db.from("user_sources")
+      .select("source_id, added_by, trust, sources(id, kind, title, url, discovery_categories, why, evidence)").eq("user_id", uid).eq("muted", false);
+    if (res.error) res = await this.db.from("user_sources").select("source_id, added_by, trust, sources(id, kind, title, url, discovery_categories)").eq("user_id", uid).eq("muted", false) as typeof res;
+    const rows = must(res) as Row[];
     return rows.map((r) => ({
       id: r.sources.id, kind: r.sources.kind, title: r.sources.title, url: r.sources.url, categories: r.sources.discovery_categories,
-      addedBy: r.added_by, trust: r.trust,
+      why: r.sources.why, evidence: r.sources.evidence ?? [], addedBy: r.added_by, trust: r.trust,
     }));
   }
 
   async followSource(id: string) {
-    must(await this.db.from("user_sources").upsert({ user_id: await this.uid(), source_id: id, added_by: "user" }, { onConflict: "user_id,source_id" }));
+    must(await this.db.from("user_sources").upsert({ user_id: await this.uid(), source_id: id, added_by: "user", trust: 1, muted: false }, { onConflict: "user_id,source_id" }));
   }
 
   async addSource(s: { kind: MySource["kind"]; title: string; url?: string; feedUrl?: string }) {
@@ -152,7 +162,10 @@ export class SupabaseApi implements Api {
   }
 
   async removeSource(id: string) {
-    must(await this.db.from("user_sources").delete().eq("user_id", await this.uid()).eq("source_id", id));
+    const uid = await this.uid();
+    // Sources we added are muted, not deleted, so the worker does not add them again.
+    must(await this.db.from("user_sources").update({ muted: true }).eq("user_id", uid).eq("source_id", id).eq("added_by", "system"));
+    must(await this.db.from("user_sources").delete().eq("user_id", uid).eq("source_id", id).eq("added_by", "user"));
   }
 
   async searchPodcasts(q: string): Promise<PodcastHit[]> {
@@ -196,7 +209,7 @@ export class SupabaseApi implements Api {
 
   async getEpisode(id: string): Promise<EpisodeDetail> {
     const e = must(await this.db.from("episodes")
-      .select("*, episode_segments(*), episode_sources(segment_id, source_items(title, url, sources(title)))")
+      .select("*, episode_segments!episode_segments_episode_id_fkey(*), episode_sources(segment_id, source_items(title, url, sources(title)))")
       .eq("id", id).single()) as Row;
     let audioUrl: string | null = null;
     if (e.audio_path) {
