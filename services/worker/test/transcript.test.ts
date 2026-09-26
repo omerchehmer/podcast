@@ -9,6 +9,7 @@ import { addTranscripts, pickTranscript, transcriptToText } from "../src/pipelin
 import { runEpisode } from "../src/pipeline/run";
 import { MockLlm } from "../src/providers/mockLlm";
 import { MockTts } from "../src/providers/tts";
+import { CostTracker } from "../src/lib/cost";
 import type { LlmClient } from "../src/providers/llm";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -101,6 +102,49 @@ describe("addTranscripts", () => {
     expect(itemForLlm(out!, "excerpt").partial).toBe(true);
     // the short summary is still from the show notes
     expect(itemForLlm(out!, "summary").basis).toBe("show_notes");
+  });
+});
+
+describe("long transcripts", () => {
+  function longItem(words: number): CollectedItem {
+    const dir = mkdtempSync(join(tmpdir(), "briefcast-"));
+    writeFileSync(join(dir, "long.txt"), Array.from({ length: words }, (_, n) => `w${n}`).join(" "));
+    return {
+      id: "S1", sourceTitle: "P", sourceKind: "podcast", trust: 1, title: "Long", summary: "s", excerpt: "s", hash: "h",
+      basis: "show_notes", transcript: { url: pathToFileURL(join(dir, "long.txt")).href, type: "text/plain" },
+    };
+  }
+
+  it("turns a long transcript into short notes with one cheap call", async () => {
+    const llm = new MockLlm();
+    const [out] = await addTranscripts([longItem(LIMITS.digestAboveWords + 5000)], undefined, { llm, cost: new CostTracker() });
+    expect(llm.calls.filter((c) => c.step === "digest")).toHaveLength(1);
+    expect(out!.basis).toBe("transcript");
+    expect(out!.transcriptPartial).toBe(false);
+    expect(out!.excerpt.split(/\s+/).length).toBeLessThanOrEqual(800);
+  });
+
+  it("does not call the model for a short transcript", async () => {
+    const llm = new MockLlm();
+    const [out] = await addTranscripts([longItem(500)], undefined, { llm, cost: new CostTracker() });
+    expect(llm.calls).toHaveLength(0);
+    expect(out!.excerpt.split(/\s+/).length).toBe(500);
+  });
+
+  it("keeps the start of the transcript, marked partial, when the digest fails", async () => {
+    const llm: LlmClient = { json: async () => { throw new Error("model down"); } };
+    const [out] = await addTranscripts([longItem(LIMITS.digestAboveWords + 5000)], undefined, { llm, cost: new CostTracker() });
+    expect(out!.basis).toBe("transcript");
+    expect(out!.transcriptPartial).toBe(true);
+    expect(out!.excerpt.split(/\s+/).length).toBeLessThanOrEqual(LIMITS.digestAboveWords + 1);
+  });
+
+  it("never sends more than the word limit to the digest", async () => {
+    const llm = new MockLlm();
+    await addTranscripts([longItem(LIMITS.maxTranscriptWords + 1000)], undefined, { llm, cost: new CostTracker() });
+    const sent = String((llm.calls[0]!.data as { transcript: string }).transcript).split(/\s+/).filter((w) => w !== "…");
+    expect(sent.length).toBe(LIMITS.maxTranscriptWords);
+    expect((llm.calls[0]!.data as { partial: boolean }).partial).toBe(true);
   });
 });
 

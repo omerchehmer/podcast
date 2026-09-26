@@ -165,6 +165,20 @@ If a section is fine, set ok to true and return an empty fixedLines list.
 In "detail", describe the problem briefly and never repeat sensitive data.
 `.trim();
 
+export const DIGEST_SYSTEM = `
+You turn the transcript of one podcast episode into short episode notes. A writer will use only your
+notes to talk about the episode, and a checker will use them to check facts. So be faithful.
+
+- About 800 words. Cover the whole episode, beginning to end, not only the start.
+- One point per line. Start each line with who said it, as named in the transcript
+  ("Guest:", "Anna:"). If the speaker is not clear, write "Speaker:".
+- Keep the main arguments, examples, numbers, names, dates and any disagreement, in plain words.
+- Keep exact numbers exactly as said. Never add facts, numbers or opinions that are not in the transcript.
+- Skip ads, sponsor reads, greetings, jokes and small talk.
+- Very short quotes are fine (under 20 words) when the exact words matter. Mark them with quotes.
+- If "partial" is true, the transcript is only the first part of the episode. Say so in the first line.
+`.trim();
+
 export const LEARN_SYSTEM = `
 You keep a short memory of what one podcast listener likes, based on their feedback.
 You write two things:
