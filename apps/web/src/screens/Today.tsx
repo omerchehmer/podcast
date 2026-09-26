@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { api, type EpisodeSummary, type Settings } from "../api";
-import { DAYS, formatTime, friendlyDate } from "../copy";
+import { DAYS, formatTime, friendlyDate, nextEpisodeAt, nextEpisodeLabel } from "../copy";
 import type { Go } from "../App";
 
 export function Today({ go }: { go: Go }) {
   const [episodes, setEpisodes] = useState<EpisodeSummary[] | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [name, setName] = useState("");
+  const [timeZone, setTimeZone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     api.listEpisodes().then(setEpisodes);
     api.getSettings().then(setSettings);
-    api.getProfile().then((p) => setName(p.displayName));
+    api.getProfile().then((p) => { setName(p.displayName); if (p.timeZone) setTimeZone(p.timeZone); });
   }, []);
 
   const latest = episodes?.find((e) => e.status === "ready");
@@ -47,12 +48,17 @@ export function Today({ go }: { go: Go }) {
         </div>
       ) : null}
 
-      {settings && (
-        <p className="muted small" style={{ marginTop: 16 }}>
-          Next episodes: {settings.frequency === "daily" ? "every day" : settings.frequency === "weekdays" ? "every weekday" : settings.customDays.map((d) => DAYS[d - 1]).join(", ") || "no days chosen"}
-          {" "}at {settings.deliveryTime}, {settings.lengthMinutes} minutes.
-        </p>
-      )}
+      {settings && (() => {
+        const next = nextEpisodeAt(settings, timeZone);
+        const days = settings.frequency === "daily" ? "every day" : settings.frequency === "weekdays" ? "Monday to Friday" : settings.customDays.map((d) => DAYS[d - 1]).join(", ");
+        return (
+          <p className="muted small" style={{ marginTop: 16 }}>
+            {next
+              ? <>Next episode: <b>{nextEpisodeLabel(next, timeZone)}</b>, {settings.lengthMinutes} minutes. Schedule: {days}.</>
+              : <>No days chosen, so no episodes are scheduled. Choose days in Settings.</>}
+          </p>
+        );
+      })()}
 
       {!working && (
         <>

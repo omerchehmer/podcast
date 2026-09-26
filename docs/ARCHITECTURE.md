@@ -62,7 +62,10 @@ still mostly managed.
 ### 0.4 Some source types are legally or technically weak
 - **Podcast transcripts:** most shows do not publish them. Making our own transcripts from their audio
   is a copyright risk and costs money. **MVP uses title + show notes only.** If a feed includes a
-  `podcast:transcript` tag, we use it.
+  `podcast:transcript` tag, we read it (first 3,000 words) for the episodes the plan uses.
+  Every item carries a `basis` (`text`, `show_notes` or `transcript`). With show notes only, the
+  script must say "the show notes say…" and never claim what a guest said; the checker flags
+  `wrong_basis` lines.
 - **YouTube transcripts:** the official API does not give transcripts for other people's videos.
   Scraping breaks YouTube's terms. **Moved to v2** (already outside your MVP list — good).
 - **Newsletters forwarded by the user:** fine for personal use. We must strip tracking links and

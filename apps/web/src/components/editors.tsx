@@ -322,7 +322,7 @@ export function SettingsEditor({ value, onChange }: { value: Settings; onChange:
   return (
     <div>
       <h3>How often</h3>
-      {pick([["weekdays", "Weekdays"], ["daily", "Every day"], ["custom", "Choose days"]] as const, value.frequency, (v) => set("frequency", v))}
+      {pick([["daily", "Every day"], ["weekdays", "Mon–Fri"], ["custom", "Choose days"]] as const, value.frequency, (v) => set("frequency", v))}
       {value.frequency === "custom" && (
         <div className="chips" style={{ marginTop: 10 }}>
           {DAYS.map((d, i) => {

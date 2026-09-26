@@ -1,0 +1,27 @@
+WEBVTT
+
+NOTE sample transcript for tests
+
+1
+00:00:00.000 --> 00:00:05.000
+<v Host>Welcome back. Today we talk about AI agents and travel booking.
+
+2
+00:00:05.000 --> 00:00:12.000
+<v Host>My guest runs a travel company. How much of your booking comes from agents?
+
+3
+00:00:12.000 --> 00:00:20.000
+<v Guest>Right now about two percent of our bookings come from AI agents.
+
+4
+00:00:20.000 --> 00:00:28.000
+<v Guest>But that number doubled in six months, so we rebuilt our search API for them.
+
+5
+00:00:28.000 --> 00:00:36.000
+<v Guest>Agents do not care about our brand. They care about clean prices, fast answers and clear rules for refunds.
+
+6
+00:00:36.000 --> 00:00:42.000
+<v Host>That is a big change. Thank you for coming on the show today.

@@ -9,7 +9,7 @@ describe("config", () => {
     for (const v of Object.values(DEFAULT_VOICES)) expect(VOICES.some((x) => x.id === v)).toBe(true);
   });
   it("settings have safe defaults", () => {
-    expect(PodcastSettings.parse({})).toMatchObject({ frequency: "weekdays", lengthMinutes: 15, format: "solo", episodeType: "mix" });
+    expect(PodcastSettings.parse({})).toMatchObject({ frequency: "daily", lengthMinutes: 15, format: "solo", episodeType: "mix" });
     expect(ListenerInput.parse({}).settings.language).toBe("en");
   });
 });

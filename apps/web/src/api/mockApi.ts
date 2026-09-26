@@ -85,7 +85,7 @@ export class MockApi implements Api {
   private signedIn = false;
   private profile: Profile = { displayName: "", timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, onboardingDone: false, hasAccess: true };
   private settings: Settings = {
-    frequency: "weekdays", customDays: [], deliveryTime: "07:30", lengthMinutes: 15, format: "solo",
+    frequency: "daily", customDays: [], deliveryTime: "07:30", lengthMinutes: 15, format: "solo",
     voiceA: "marin", voiceB: "cedar", episodeType: "mix", tone: "direct", language: "en",
   };
   private interests: Interest[] = [];
