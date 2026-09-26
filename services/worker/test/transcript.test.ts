@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { ListenerInput } from "@briefcast/shared";
+import { LIMITS, ListenerInput } from "@briefcast/shared";
 import { collect, itemForLlm, parseFeed, type CollectedItem } from "../src/pipeline/collect";
 import { addTranscripts, pickTranscript, transcriptToText } from "../src/pipeline/transcript";
 import { runEpisode } from "../src/pipeline/run";
@@ -91,7 +91,7 @@ describe("addTranscripts", () => {
 
   it("marks a long transcript as partial", async () => {
     const dir = mkdtempSync(join(tmpdir(), "briefcast-"));
-    writeFileSync(join(dir, "long.txt"), "word ".repeat(5000));
+    writeFileSync(join(dir, "long.txt"), "word ".repeat(LIMITS.maxTranscriptWords + 100));
     const item: CollectedItem = {
       id: "S1", sourceTitle: "P", sourceKind: "podcast", trust: 1, title: "Long", summary: "s", excerpt: "s", hash: "h",
       basis: "show_notes", transcript: { url: pathToFileURL(join(dir, "long.txt")).href, type: "text/plain" },
