@@ -9,7 +9,8 @@
     "test": "vitest run",
     "worker:run": "tsx src/jobs/runQueue.ts",
     "demo:invite": "tsx src/cli/invite.ts",
-    "demo:stats": "tsx src/cli/stats.ts"
+    "demo:stats": "tsx src/cli/stats.ts",
+    "voice:previews": "tsx src/cli/voicePreviews.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
