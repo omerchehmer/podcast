@@ -23,7 +23,9 @@ insert into voices (id, provider, provider_voice_id, name, description, preview_
   ('coral', 'openai', 'coral', 'Coral', 'Bright and friendly', 'voices/coral.mp3', 165),
   ('sage',  'openai', 'sage',  'Sage',  'Steady and thoughtful', 'voices/sage.mp3', 158),
   ('ash',   'openai', 'ash',   'Ash',   'Direct and confident', 'voices/ash.mp3', 162),
-  ('onyx',  'openai', 'onyx',  'Onyx',  'Deep and inspiring', 'voices/onyx.mp3', 175)
+  ('onyx',  'openai', 'onyx',  'Onyx',  'Deep and inspiring', 'voices/onyx.mp3', 175),
+  ('nova',  'openai', 'nova',  'Nova',  'Quick and energetic', 'voices/nova.mp3', 195),
+  ('echo',  'openai', 'echo',  'Echo',  'Fast and sharp', 'voices/echo.mp3', 195)
 on conflict (id) do nothing;
 
 -- Discovery catalog: researched per topic, each with why we picked it and the proof (supabase/catalog/sources.json).

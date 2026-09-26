@@ -13,7 +13,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, renameSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { VOICE_PREVIEW, VOICES } from "@briefcast/shared";
+import { DEFAULT_PACE, VOICE_PREVIEW, VOICES } from "@briefcast/shared";
 import { OpenAiTts } from "../providers/tts";
 import { CostTracker } from "../lib/cost";
 
@@ -54,7 +54,9 @@ for (const v of voices) {
     {
       text: VOICE_PREVIEW.text(v.name),
       voice: v.providerVoiceId,
-      instructions: ["Warm, natural podcast host. Relaxed pace.", v.style].filter(Boolean).join(" "),
+      // Same pace and style as real episodes, so the preview sounds like what the listener gets.
+      instructions: [v.pace ?? DEFAULT_PACE, "Warm, natural podcast host.", v.style].filter(Boolean).join(" "),
+      speed: v.speed,
     },
     cost,
   );
