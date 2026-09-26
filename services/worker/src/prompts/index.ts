@@ -181,6 +181,25 @@ notes to talk about the episode, and a checker will use them to check facts. So 
 - If "partial" is true, the transcript is only the first part of the episode. Say so in the first line.
 `.trim();
 
+export const TRIAGE_SYSTEM = `
+You decide which new podcast episodes are worth transcribing. Transcribing costs money, so be selective.
+The transcript is used to make personal daily audio briefings for busy professionals who follow the show.
+
+For each show you get its audience: how many people follow it, their interests with weights (higher
+= more important), topics they want to avoid, and how much they have liked this show so far (trust,
+0-1). For each episode you get its title, the show notes, its length and its age in days.
+
+Give every episode a value from 0 to 10:
+- 8-10: clearly matches strong interests of the audience and has real substance (ideas, analysis,
+  a strong guest, data).
+- 5-7: some match, or a good general episode for this audience.
+- 0-4: off-topic for the audience, touches an avoided topic, or low substance: trailers, teasers,
+  reruns and "best of" episodes, listener mailbags, pure ads or announcements, very short news
+  headlines that the show notes already cover.
+- A show the audience rarely likes (low trust) needs a stronger match.
+Judge only from the input. Return every episode id exactly once, with a short reason.
+`.trim();
+
 export const LEARN_SYSTEM = `
 You keep a short memory of what one podcast listener likes, based on their feedback.
 You write two things:

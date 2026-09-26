@@ -92,6 +92,20 @@ export class MockLlm implements LlmClient {
         const words = String(d.transcript).split(/\s+/);
         return { notes: words.slice(0, 800).join(" ") };
       }
+      case "triage": {
+        // Value 8 when the title shares a word with the audience's interests, else 2.
+        const shows = d.shows as Any[];
+        return {
+          episodes: shows.flatMap((sh) => {
+            const words = new Set(sh.audience.interests.flatMap((i: Any) => String(i.label).toLowerCase().split(/\W+/)).filter((w: string) => w.length > 2));
+            return sh.episodes.map((e: Any) => ({
+              id: e.id,
+              value: String(e.title).toLowerCase().split(/\W+/).some((w: string) => words.has(w)) ? 8 : 2,
+              reason: "mock",
+            }));
+          }),
+        };
+      }
       case "learn": {
         const signals: string[] = d.changesFromRules ?? [];
         return {

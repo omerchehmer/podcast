@@ -63,13 +63,19 @@ still mostly managed.
 - **Podcast transcripts:** only 2 of the first 14 followed shows publish one in their feed, so the
   worker makes its own (`services/worker/src/jobs/transcribe.ts`). After the due episodes, each hourly
   run takes every podcast a listener follows: the last 2 episodes the first time, then every new
-  episode. It uses the feed's transcript when there is one (free), otherwise speech-to-text
+  episode. It does not transcribe them all. Free rules skip episodes older than the followers'
+  look-back (they could never be used) and trailers. Feed transcripts are free, so they are always
+  used. For the rest, one Haiku call per run (about $0.003) scores each episode 0–10 for the
+  audience of the show (follower count, combined interests, avoided topics, trust; no personal
+  data). Only 6 or more is transcribed, best first; skipped episodes are saved as `skipped` with a
+  reason, so they are not checked again. For chosen episodes it uses speech-to-text
   (`gpt-4o-mini-transcribe`, about $0.003 a minute, 10-minute parts). One Haiku call then turns the
   text into ~800 words of notes covering the whole episode, without ads. The notes are saved once
   per episode in `episode_transcripts` and shared by all listeners of the show; the full transcript
   is not stored. Limits: 180 minutes per episode (longer ones are marked partial), 1,500 minutes a
-  day (about $4.50), 15 minutes of work per run, and 3 tries per episode. For the first 14 shows this
-  is about 600 minutes a week, roughly $10 a month in total.
+  day (about $4.50), 15 minutes of work per run, and 3 tries per episode. A real check on the first
+  14 shows: of 28 recent episodes, 23 were too old, 1 had a free transcript, and 4 of the other 5
+  were worth transcribing (144 minutes, about $0.43 instead of about $3).
   Every item carries a `basis` (`text`, `show_notes` or `transcript`). With show notes only, the
   script must say "the show notes say…" and never claim what a guest said; the checker flags
   `wrong_basis` lines.

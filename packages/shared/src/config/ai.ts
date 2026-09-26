@@ -4,7 +4,7 @@
  * check the providers' price pages from time to time and update them.
  */
 
-export type PipelineStep = "rank" | "plan" | "write" | "check" | "scrub" | "learn" | "digest";
+export type PipelineStep = "rank" | "plan" | "write" | "check" | "scrub" | "learn" | "digest" | "triage";
 
 /** Which Claude model runs each step. Cheap model for sorting/checking, stronger model for writing. */
 export const LLM_MODELS: Record<PipelineStep, string> = {
@@ -15,6 +15,7 @@ export const LLM_MODELS: Record<PipelineStep, string> = {
   scrub: "claude-haiku-4-5",
   learn: "claude-haiku-4-5",
   digest: "claude-haiku-4-5",
+  triage: "claude-haiku-4-5",
 };
 
 /** USD per 1 million tokens. Cache reads cost ~10% of input, cache writes ~125%. */
@@ -117,4 +118,5 @@ export const LLM_EFFORT: Record<PipelineStep, "low" | "medium" | "high" | undefi
   scrub: undefined,
   learn: undefined,
   digest: undefined,
+  triage: undefined,
 };
