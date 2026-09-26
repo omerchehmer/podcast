@@ -21,6 +21,7 @@ import { AnthropicLlm } from "../providers/llm";
 import { MockLlm } from "../providers/mockLlm";
 import { MockTts, OpenAiTts } from "../providers/tts";
 import { runEpisode, type EpisodeResult } from "../pipeline/run";
+import { httpFetchPage } from "../lib/fetchPage";
 import { scrubSensitive } from "../lib/scrub";
 
 const { values } = parseArgs({
@@ -59,7 +60,12 @@ async function main() {
   const tts = values.mock || values["no-audio"] ? new MockTts() : new OpenAiTts();
 
   const started = Date.now();
-  const result = await runEpisode(listener, { llm, tts, onStep: (s) => console.error(`… ${s}`) });
+  const result = await runEpisode(listener, {
+    llm, tts,
+    // The dry run stays fully offline; real runs read the full article of picked items.
+    fetchPage: values.mock ? undefined : httpFetchPage,
+    onStep: (s) => console.error(`… ${s}`),
+  });
   const dir = join(values.out!, new Date().toISOString().replace(/[:.]/g, "-"));
   await save(dir, result);
   printSummary(result, dir, (Date.now() - started) / 1000);

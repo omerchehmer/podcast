@@ -109,6 +109,19 @@ describe("full pipeline (offline)", () => {
     expect(r.withinTarget).toBe(true);
   });
 
+  it("reads the full article for picked items when a page fetcher is given", async () => {
+    const fetched: string[] = [];
+    const words = Array.from({ length: 500 }, (_, i) => `detail${i}`).join(" ");
+    const fetchPage = async (url: string) => {
+      fetched.push(url);
+      return { contentType: "text/html", body: `<article><p>Full article text. ${words}.</p></article>` };
+    };
+    const r = await runEpisode(listener(), { ...deps(), fetchPage });
+    expect(fetched.length).toBeGreaterThan(0);
+    expect(fetched.length).toBeLessThanOrEqual(15); // only picked items, not the whole feed
+    expect(r.sources.some((s) => s.item.excerpt.startsWith("Full article text."))).toBe(true);
+  });
+
   it("makes a two-host conversation", async () => {
     const l = listener();
     l.settings.format = "conversation";
