@@ -12,6 +12,7 @@ import type { LlmClient } from "../providers/llm";
 import type { TtsClient } from "../providers/tts";
 import { collect, type CollectedItem } from "./collect";
 import { rank } from "./rank";
+import { addTranscripts } from "./transcript";
 import { plan, type Plan } from "./plan";
 import { writeScript, sectionWords, type WrittenSection } from "./write";
 import { check, type CheckIssue } from "./check";
@@ -89,10 +90,13 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
   const outline = await plan(ranked, listener, words, deps.llm, cost);
 
   await step("writing");
-  const written = await writeScript(outline, ranked.items, listener, deps.llm, cost);
+  // Only now read podcast transcripts: only for the items the plan really uses.
+  const usedIds = new Set(outline.sections.flatMap((x) => x.sourceIds));
+  const items = await addTranscripts(ranked.items, usedIds);
+  const written = await writeScript(outline, items, listener, deps.llm, cost);
 
   await step("checking");
-  const checked = await check(written, ranked.items, listener.context, deps.llm, cost);
+  const checked = await check(written, items, listener.context, deps.llm, cost);
 
   await step("voicing");
   const audio = await voice(checked.sections, listener, deps.tts, cost);
@@ -117,7 +121,7 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
     sections: checked.sections,
     chapters: audio.chapters,
     transcript: audio.transcript,
-    sources: usedSources(checked.sections, ranked.items),
+    sources: usedSources(checked.sections, items),
     issues: checked.issues,
     cost: { totalUsd: round4(cost.totalUsd), byStep: cost.byStep(), entries: cost.entries },
     audio: audio.audio,

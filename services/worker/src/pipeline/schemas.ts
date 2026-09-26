@@ -56,7 +56,7 @@ export const CheckResult = z.object({
       ok: z.boolean(),
       problems: z.array(
         z.object({
-          type: z.enum(["unsupported_claim", "long_quote", "sensitive_data", "unknown_source", "not_simple", "other"]),
+          type: z.enum(["unsupported_claim", "long_quote", "sensitive_data", "unknown_source", "not_simple", "wrong_basis", "other"]),
           detail: z.string().describe("Short description. Do not repeat sensitive data here."),
         }),
       ),
