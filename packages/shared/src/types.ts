@@ -36,7 +36,7 @@ export const WEIGHT_VALUE: Record<InterestWeight, number> = {
 };
 
 export const PodcastSettings = z.object({
-  frequency: Frequency.default("weekdays"),
+  frequency: Frequency.default("daily"),
   /** 1 = Monday … 7 = Sunday. Used when frequency is "custom". */
   customDays: z.array(z.number().int().min(1).max(7)).default([]),
   /** Local time "HH:MM". */
