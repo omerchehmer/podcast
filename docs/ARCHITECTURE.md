@@ -60,10 +60,16 @@ worker** (a Docker container on Fly.io, Railway or Google Cloud Run) runs the pi
 still mostly managed.
 
 ### 0.4 Some source types are legally or technically weak
-- **Podcast transcripts:** most shows do not publish them. Making our own transcripts from their audio
-  is a copyright risk and costs money. **MVP uses title + show notes only.** If a feed includes a
-  `podcast:transcript` tag, we read it for the episodes the plan uses. Transcripts over 2,500 words
-  are first turned into ~800 words of notes covering the whole episode (one Haiku call, a few cents).
+- **Podcast transcripts:** only 2 of the first 14 followed shows publish one in their feed, so the
+  worker makes its own (`services/worker/src/jobs/transcribe.ts`). After the due episodes, each hourly
+  run takes every podcast a listener follows: the last 2 episodes the first time, then every new
+  episode. It uses the feed's transcript when there is one (free), otherwise speech-to-text
+  (`gpt-4o-mini-transcribe`, about $0.003 a minute, 10-minute parts). One Haiku call then turns the
+  text into ~800 words of notes covering the whole episode, without ads. The notes are saved once
+  per episode in `episode_transcripts` and shared by all listeners of the show; the full transcript
+  is not stored. Limits: 180 minutes per episode (longer ones are marked partial), 1,500 minutes a
+  day (about $4.50), 15 minutes of work per run, and 3 tries per episode. For the first 14 shows this
+  is about 600 minutes a week, roughly $10 a month in total.
   Every item carries a `basis` (`text`, `show_notes` or `transcript`). With show notes only, the
   script must say "the show notes say…" and never claim what a guest said; the checker flags
   `wrong_basis` lines.

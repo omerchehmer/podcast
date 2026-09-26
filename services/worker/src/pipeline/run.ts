@@ -12,7 +12,7 @@ import type { LlmClient } from "../providers/llm";
 import type { TtsClient } from "../providers/tts";
 import { collect, type CollectedItem } from "./collect";
 import { rank } from "./rank";
-import { addTranscripts } from "./transcript";
+import { addTranscripts, applyStoredNotes, type EpisodeNotes } from "./transcript";
 import { plan, type Plan } from "./plan";
 import { writeScript, sectionWords, type WrittenSection } from "./write";
 import { check, type CheckIssue } from "./check";
@@ -27,6 +27,8 @@ export interface RunDeps {
   /** Items to use instead of fetching feeds (tests, or items already in the database). */
   items?: CollectedItem[];
   onStep?: (step: Step) => void | Promise<void>;
+  /** Podcast episode notes made earlier by the transcription job, keyed by notesKey(item). */
+  storedNotes?: (items: CollectedItem[]) => Promise<Map<string, EpisodeNotes>>;
 }
 
 export interface EpisodeSource {
@@ -80,7 +82,8 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
 
   await step("collecting");
   const lookback = s.frequency === "custom" && s.customDays.length <= 2 ? LIMITS.lookbackDaysWeekly : LIMITS.lookbackDaysDaily;
-  const collected = deps.items ?? (await collect(listener.sources, { now, lookbackDays: lookback }));
+  const fetched = deps.items ?? (await collect(listener.sources, { now, lookbackDays: lookback }));
+  const collected = deps.storedNotes ? applyStoredNotes(fetched, await safeNotes(deps.storedNotes, fetched)) : fetched;
 
   await step("ranking");
   const ranked = await rank(collected, listener, deps.llm, cost, now);
@@ -90,7 +93,7 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
   const outline = await plan(ranked, listener, words, deps.llm, cost);
 
   await step("writing");
-  // Only now read podcast transcripts: only for the items the plan really uses.
+  // Podcasts without saved notes: read the feed's transcript now, only for the items the plan uses.
   const usedIds = new Set(outline.sections.flatMap((x) => x.sourceIds));
   const items = await addTranscripts(ranked.items, usedIds, { llm: deps.llm, cost });
   const written = await writeScript(outline, items, listener, deps.llm, cost);
@@ -126,6 +129,16 @@ export async function runEpisode(input: ListenerInput, deps: RunDeps): Promise<E
     cost: { totalUsd: round4(cost.totalUsd), byStep: cost.byStep(), entries: cost.entries },
     audio: audio.audio,
   };
+}
+
+/** Saved podcast notes make episodes better, but a failed lookup must never stop an episode. */
+async function safeNotes(load: NonNullable<RunDeps["storedNotes"]>, items: CollectedItem[]): Promise<Map<string, EpisodeNotes>> {
+  try {
+    return await load(items);
+  } catch (e) {
+    log.warn("stored notes lookup failed", { error: e instanceof Error ? e.message : String(e) });
+    return new Map();
+  }
 }
 
 /** Only sources that are actually tagged in the final script, for the "Sources" screen. */

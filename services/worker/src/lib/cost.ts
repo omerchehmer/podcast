@@ -50,6 +50,13 @@ export class CostTracker {
     });
   }
 
+  addStt(provider: string, model: string, usd: number): CostEntry {
+    return this.push({
+      step: "transcribe", provider, model, inputTokens: 0, outputTokens: 0,
+      cacheReadTokens: 0, cacheWriteTokens: 0, characters: 0, usd,
+    });
+  }
+
   get totalUsd(): number {
     return this.entries.reduce((a, e) => a + e.usd, 0);
   }

@@ -5,6 +5,7 @@
  *   2. create episodes for users whose delivery time is close
  *   3. learn from new feedback (so the next episode already uses it)
  *   4. make every queued episode, a few at a time
+ *   5. transcribe new podcast episodes with the time that is left (see transcribe.ts)
  *
  * Needs: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CONTEXT_ENCRYPTION_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY
  */
@@ -12,6 +13,8 @@ import { LIMITS } from "@briefcast/shared";
 import { Repo, serviceClient, type EpisodeRow } from "../db/repo";
 import { AnthropicLlm, type LlmClient } from "../providers/llm";
 import { OpenAiTts, type TtsClient } from "../providers/tts";
+import { OpenAiStt, type SttClient } from "../providers/stt";
+import { transcribeNew } from "./transcribe";
 import { runEpisode, NotEnoughContentError } from "../pipeline/run";
 import { computeUpdates, summarize } from "../learning/learn";
 import { CostCapExceeded, CostTracker } from "../lib/cost";
@@ -45,7 +48,9 @@ export async function learnFromFeedback(repo: Repo, llm: LlmClient): Promise<num
 export async function processEpisode(repo: Repo, ep: EpisodeRow, llm: LlmClient, tts: TtsClient): Promise<void> {
   try {
     const listener = await repo.loadListener(ep);
-    const result = await runEpisode(listener, { llm, tts, onStep: (s) => repo.setStatus(ep.id, s) });
+    const result = await runEpisode(listener, {
+      llm, tts, onStep: (s) => repo.setStatus(ep.id, s), storedNotes: (items) => repo.storedNotes(items),
+    });
     await repo.publish(ep, result);
     log.info("episode ready", { episodeId: ep.id, seconds: result.durationSec, usd: result.cost.totalUsd });
   } catch (e) {
@@ -58,7 +63,7 @@ export async function processEpisode(repo: Repo, ep: EpisodeRow, llm: LlmClient,
   }
 }
 
-export async function runQueue(repo: Repo, llm: LlmClient, tts: TtsClient): Promise<{ made: number }> {
+export async function runQueue(repo: Repo, llm: LlmClient, tts: TtsClient, stt: SttClient): Promise<{ made: number }> {
   const started = Date.now();
   await repo.requeueStale();
   const created = await repo.createDueEpisodes(90);
@@ -66,23 +71,36 @@ export async function runQueue(repo: Repo, llm: LlmClient, tts: TtsClient): Prom
   log.info("run start", { created, learned });
 
   let made = 0;
-  await Promise.all(
-    Array.from({ length: CONCURRENCY }, async () => {
-      while (Date.now() - started < MAX_RUN_MS) {
-        const ep = await repo.claimNext();
-        if (!ep) return;
-        await processEpisode(repo, ep, llm, tts);
-        made++;
-      }
-    }),
-  );
+  const makeQueued = () =>
+    Promise.all(
+      Array.from({ length: CONCURRENCY }, async () => {
+        while (Date.now() - started < MAX_RUN_MS) {
+          const ep = await repo.claimNext();
+          if (!ep) return;
+          await processEpisode(repo, ep, llm, tts);
+          made++;
+        }
+      }),
+    ).then(() => undefined);
+  await makeQueued();
+
+  // Episodes come first. Then transcribe new podcast episodes, so tomorrow's episodes can use them.
+  // Between podcast episodes we make any episode a listener asked for in the meantime.
+  const deadline = Math.min(started + MAX_RUN_MS, Date.now() + LIMITS.transcribeBudgetMinutes * 60_000);
+  try {
+    const t = await transcribeNew(repo, { llm, stt }, { deadline, between: makeQueued });
+    log.info("transcription done", t);
+  } catch (e) {
+    log.error("transcription failed", { error: e instanceof Error ? e.message : String(e) });
+  }
+
   log.info("run done", { made, seconds: Math.round((Date.now() - started) / 1000) });
   return { made };
 }
 
 // Run directly: `pnpm worker:run`
 if (import.meta.url === `file://${process.argv[1]}`) {
-  runQueue(new Repo(serviceClient()), new AnthropicLlm(), new OpenAiTts()).catch((e) => {
+  runQueue(new Repo(serviceClient()), new AnthropicLlm(), new OpenAiTts(), new OpenAiStt()).catch((e) => {
     log.error("run crashed", { error: e instanceof Error ? e.message : String(e) });
     process.exit(1);
   });

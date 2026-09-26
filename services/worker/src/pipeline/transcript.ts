@@ -81,7 +81,7 @@ export function transcriptToText(body: string, type: string): string {
 
 const MAX_BYTES = 3_000_000;
 
-async function loadTranscript(url: string): Promise<string> {
+export async function loadTranscript(url: string): Promise<string> {
   if (url.startsWith("file://")) return readFile(fileURLToPath(url), "utf8");
   const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -91,32 +91,65 @@ async function loadTranscript(url: string): Promise<string> {
   return body;
 }
 
+export interface EpisodeNotes {
+  notes: string;
+  /** true when the notes cover only the first part of the episode. */
+  partial: boolean;
+}
+
 /**
  * Long transcripts are too big (and too costly) to send to the writer and the checker for every
  * section. One cheap call turns them into ~800 words of notes that cover the whole episode.
- * If that call fails, we keep the start of the transcript and mark it partial.
+ * Short transcripts are used as they are. If the call fails, or there is no LLM, we keep the start
+ * of the transcript and mark it partial.
+ * `cutShort` is true when the text itself is already only part of the episode (for example, audio
+ * longer than we transcribe). `always` makes notes even for a short transcript: the shared job uses
+ * it, because raw transcripts include ads and sponsor reads that must not reach the writer.
  */
-async function digest(
-  item: CollectedItem, text: string, partial: boolean, llm: LlmClient, cost: CostTracker,
-): Promise<{ excerpt: string; partial: boolean }> {
+export async function makeNotes(
+  text: string,
+  meta: { podcast: string; episode: string },
+  ai?: { llm: LlmClient; cost: CostTracker },
+  opts: { cutShort?: boolean; always?: boolean } = {},
+): Promise<EpisodeNotes> {
+  const total = wordCount(text);
+  const partial = !!opts.cutShort || total > LIMITS.maxTranscriptWords;
+  const full = truncateWords(text, LIMITS.maxTranscriptWords);
+  if (total <= LIMITS.digestAboveWords && !(opts.always && ai)) return { notes: full, partial };
+  if (!ai) return { notes: truncateWords(text, LIMITS.digestAboveWords), partial: true };
   try {
-    const out = await llm.json(
+    const out = await ai.llm.json(
       "digest",
       {
         system: DIGEST_SYSTEM,
         task: "Write the episode notes for this transcript.",
-        data: { podcast: item.sourceTitle, episode: item.title, partial, transcript: text },
+        data: { podcast: meta.podcast, episode: meta.episode, partial, transcript: full },
         schema: TranscriptDigest,
         maxTokens: 4000,
       },
-      cost,
+      ai.cost,
     );
     if (wordCount(out.notes) < 30) throw new Error("digest is empty");
-    return { excerpt: out.notes.trim(), partial };
+    return { notes: out.notes.trim(), partial };
   } catch (e) {
-    log.warn("transcript digest failed", { source: item.sourceTitle, error: String(e) });
-    return { excerpt: truncateWords(text, LIMITS.digestAboveWords), partial: true };
+    log.warn("transcript digest failed", { source: meta.podcast, error: String(e) });
+    return { notes: truncateWords(text, LIMITS.digestAboveWords), partial: true };
   }
+}
+
+function withNotes<T extends CollectedItem>(item: T, n: EpisodeNotes): T {
+  return { ...item, basis: "transcript", transcriptPartial: n.partial, excerpt: n.notes };
+}
+
+/** Key that links a feed item to its saved episode notes. */
+export const notesKey = (i: { sourceId?: string; hash: string }) => `${i.sourceId ?? ""}:${i.hash}`;
+
+/** Use episode notes made earlier by the transcription job (shared by all listeners of a show). */
+export function applyStoredNotes<T extends CollectedItem>(items: T[], stored: Map<string, EpisodeNotes>): T[] {
+  return items.map((i) => {
+    const n = i.basis === "show_notes" && i.sourceId ? stored.get(notesKey(i)) : undefined;
+    return n ? withNotes(i, n) : i;
+  });
 }
 
 /**
@@ -142,14 +175,7 @@ export async function addTranscripts<T extends CollectedItem>(
           log.warn("transcript failed", { source: item.sourceTitle, error: String(e) });
           return;
         }
-        const total = wordCount(text);
-        const partial = total > LIMITS.maxTranscriptWords;
-        const full = truncateWords(text, LIMITS.maxTranscriptWords);
-        const result =
-          total <= LIMITS.digestAboveWords ? { excerpt: full, partial }
-          : ai ? await digest(item, full, partial, ai.llm, ai.cost)
-          : { excerpt: truncateWords(text, LIMITS.digestAboveWords), partial: true };
-        loaded.set(item.id, { ...item, basis: "transcript", transcriptPartial: result.partial, excerpt: result.excerpt });
+        loaded.set(item.id, withNotes(item, await makeNotes(text, { podcast: item.sourceTitle, episode: item.title }, ai)));
       }),
     );
   }

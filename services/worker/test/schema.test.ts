@@ -70,6 +70,16 @@ describe("row level security", () => {
     ).rejects.toThrow();
   });
 
+  it("users cannot read the shared podcast episode notes (server only)", async () => {
+    const src = await db.query<{ id: string }>(`insert into sources (kind, title, feed_url) values ('podcast', 'Pod', 'https://example.com/pod.xml') returning id`);
+    await db.query(`insert into episode_transcripts (source_id, episode_key, title, status, notes) values ($1, 'k1', 'Ep', 'done', 'notes')`, [src.rows[0]!.id]);
+    await expect(
+      db.query(`insert into episode_transcripts (source_id, episode_key, title, status) values ($1, 'k1', 'Ep', 'done')`, [src.rows[0]!.id]),
+    ).rejects.toThrow();
+    const r = await asUser(db, alice, () => db.query(`select * from episode_transcripts`));
+    expect(r.rows).toHaveLength(0);
+  });
+
   it("users cannot read the cost log", async () => {
     await db.query(`insert into cost_log (step, provider, model, usd) values ('write', 'anthropic', 'x', 0.1)`);
     const r = await asUser(db, alice, () => db.query(`select * from cost_log`));

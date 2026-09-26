@@ -79,6 +79,8 @@ export interface RawItem {
   html: string;
   /** true when the item has an audio file (a podcast episode), even in a feed added as plain RSS. */
   audio?: boolean;
+  /** Link to the episode's audio file, for speech-to-text. */
+  audioUrl?: string;
   transcript?: TranscriptLink;
 }
 
@@ -88,10 +90,11 @@ function transcriptLinks(v: unknown): TranscriptLink[] {
     .map((t) => ({ url: t["@url"]!, type: t["@type"] ?? "" }));
 }
 
-function hasAudio(v: unknown): boolean {
-  return asArray(v as Record<string, string> | Record<string, string>[]).some(
-    (e) => e && typeof e === "object" && /^(audio|video)\//i.test(e["@type"] ?? ""),
+function audioUrl(v: unknown): string | undefined {
+  const e = asArray(v as Record<string, string> | Record<string, string>[]).find(
+    (e) => e && typeof e === "object" && e["@url"] && (/^(audio|video)\//i.test(e["@type"] ?? "") || /\.(mp3|m4a|aac|ogg|opus|wav)(\?|$)/i.test(e["@url"])),
   );
+  return e?.["@url"];
 }
 
 export function parseFeed(xml: string): RawItem[] {
@@ -107,7 +110,8 @@ export function parseFeed(xml: string): RawItem[] {
       url: txt(it.link) || txt(it.guid) || undefined,
       publishedAt: txt(it.pubDate) || txt(it["dc:date"]) || undefined,
       html: txt(it["content:encoded"]) || txt(it.description) || txt(it["itunes:summary"]),
-      audio: hasAudio(it.enclosure),
+      audio: !!audioUrl(it.enclosure),
+      audioUrl: audioUrl(it.enclosure),
       transcript: pickTranscript(transcriptLinks(it["podcast:transcript"])),
     });
   }
@@ -122,7 +126,7 @@ export function parseFeed(xml: string): RawItem[] {
   return out.filter((i) => i.title);
 }
 
-async function loadFeed(feedUrl: string): Promise<string> {
+export async function loadFeed(feedUrl: string): Promise<string> {
   if (feedUrl.startsWith("file://")) return readFile(fileURLToPath(feedUrl), "utf8");
   const res = await fetch(feedUrl, {
     headers: { "user-agent": USER_AGENT, accept: "application/rss+xml, application/atom+xml, application/xml, text/xml" },
